@@ -1,6 +1,5 @@
 import React from 'react';
 import imageCompression from 'browser-image-compression';
-import { ref, uploadBytes, getDownloadURL, getStorage } from 'firebase/storage';
 import {
   getFirestore,
   updateDoc,
@@ -17,9 +16,10 @@ import {
 import { User } from 'firebase/auth';
 import app from './firbaseConfig';
 import { notificationTypes, userDetailTypes } from './atoms';
+import { uploadToCloudinary } from './uploadToCloudinary';
 
 interface selectedImageProps {
-  e: any;
+  e: React.ChangeEvent<HTMLInputElement>;
   setSelectedImage: React.Dispatch<React.SetStateAction<File | undefined>>;
   setImageSelected: React.Dispatch<React.SetStateAction<boolean>>;
 }
@@ -29,28 +29,30 @@ export function handleSelectedImage({
   setSelectedImage,
   setImageSelected,
 }: selectedImageProps) {
-  const fileType = e.target.files[0].type;
-  const imageFile = e.target.files[0];
+  const file = e.target.files?.[0];
+  if (!file) return;
+
+  const fileType = file.type;
 
   if (
     fileType === 'image/png' ||
     fileType === 'image/jpg' ||
     fileType === 'image/jpeg'
   ) {
-    setSelectedImage(imageFile);
+    setSelectedImage(file);
     setImageSelected(true);
   } else {
     console.log('please only use .png, .jpg, .jpeg file types');
   }
 }
 
-interface handleSubmitProps {
-  url: string;
+interface PublishProps {
   userNotifications: notificationTypes;
   userDetails: userDetailTypes | User;
   caption: string;
+  selectedImage?: File;
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
-  setAddPost: React.Dispatch<React.SetStateAction<boolean>>;
+  onDone?: () => void;
 }
 
 async function handleSubmitToDB({
@@ -58,7 +60,12 @@ async function handleSubmitToDB({
   userNotifications,
   userDetails,
   caption,
-}: handleSubmitProps) {
+}: {
+  url: string;
+  userNotifications: notificationTypes;
+  userDetails: userDetailTypes | User;
+  caption: string;
+}) {
   const db = getFirestore(app);
   const userRef = doc(db, 'users', userNotifications.username!);
   const userPostDocRef = doc(
@@ -67,20 +74,17 @@ async function handleSubmitToDB({
     'userPosts'
   );
 
-  // add to post count
   updateDoc(userRef, {
-     
     postCount: userNotifications.postCount! + 1,
   });
 
   const postCaption = {
     text: caption,
-    avatarURL: userDetails.photoURL,
+    avatarURL: userDetails.photoURL || '',
     username: userDetails.displayName,
     createdAt: new Date().toLocaleDateString(),
   };
 
-  // create document within 'username'Posts
   await addDoc(collection(db, `${userNotifications.username}Posts`), {
     createdAt: serverTimestamp(),
     imgURL: url,
@@ -90,7 +94,6 @@ async function handleSubmitToDB({
     likes: [],
   });
 
-  // get latest added doc ID
   const q = query(
     collection(db, `${userNotifications.username}Posts`),
     orderBy('createdAt', 'desc'),
@@ -102,16 +105,60 @@ async function handleSubmitToDB({
     latestPostId = latestPost.id;
   });
 
-  // update users post list with the latest document ID
   updateDoc(userPostDocRef, {
     postsListArray: arrayUnion(latestPostId!),
   });
 
-  // add document ID to within the post document
   const docRef = doc(db, `${userNotifications.username!}Posts`, latestPostId!);
   updateDoc(docRef, {
     postID: latestPostId!,
   });
+}
+
+/** Text-first publish: image optional. */
+export async function publishYap({
+  userNotifications,
+  userDetails,
+  caption,
+  selectedImage,
+  setLoading,
+  onDone,
+}: PublishProps) {
+  const trimmed = caption.trim();
+  if (!trimmed && !selectedImage) {
+    return;
+  }
+
+  setLoading(true);
+
+  try {
+    let url = '';
+    if (selectedImage) {
+      const compressedFile = await imageCompression(selectedImage, {
+        maxSizeMB: 1,
+        maxWidthOrHeight: 1200,
+        useWebWorker: true,
+      });
+      url = await uploadToCloudinary(compressedFile, {
+        folder: 'yap/posts',
+        publicId: `${userDetails.displayName}_post_${
+          (userNotifications.postCount || 0) + 1
+        }_${Date.now()}`,
+      });
+    }
+
+    await handleSubmitToDB({
+      url,
+      userNotifications,
+      userDetails,
+      caption: trimmed,
+    });
+    onDone?.();
+  } catch (error) {
+    console.log(error);
+  } finally {
+    setLoading(false);
+  }
 }
 
 interface submitProps {
@@ -123,6 +170,7 @@ interface submitProps {
   setAddPost: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
+/** Legacy modal submit — still image-required for AddNewPost dialog. */
 export async function handleSubmit({
   userNotifications,
   userDetails,
@@ -131,47 +179,12 @@ export async function handleSubmit({
   setLoading,
   setAddPost,
 }: submitProps) {
-  const storage = getStorage();
-  const options = {
-    maxSizeMB: 1,
-    maxWidthOrHeight: 600,
-    useWebWorker: true,
-  };
-
-  setLoading(true);
-
-  const storageRef = ref(
-    storage,
-    `posts/${userDetails.displayName}post${userNotifications.postCount! + 1}`
-  );
-
-  // compress the image
-  const compressedFile = await imageCompression(selectedImage!, options);
-
-  // upload to storage, and then retrieve the usable URL
-  await uploadBytes(storageRef, compressedFile).then(() => {
-    // image uplaoded
+  await publishYap({
+    userNotifications,
+    userDetails,
+    caption,
+    selectedImage,
+    setLoading,
+    onDone: () => setAddPost(false),
   });
-  getDownloadURL(
-    ref(
-      storage,
-      `posts/${userDetails.displayName}post${userNotifications.postCount! + 1}`
-    )
-  )
-    .then((url) => {
-      setLoading(false);
-      setAddPost(false);
-      handleSubmitToDB({
-        url,
-        userNotifications,
-        userDetails,
-        caption,
-        setLoading,
-        setAddPost,
-      });
-    })
-    .catch((error) => {
-      console.log(error);
-      setLoading(false);
-    });
 }

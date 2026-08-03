@@ -18,3 +18,7 @@
 ### Phase 1
 - Environment scaffolding via `.env.example` and env-backed Firebase config.
 - Yappers design tokens, branding rename, UI kit primitives, and application shell.
+- Cloudinary replaces Firebase Storage for image uploads (see `02b-cloudinary-media.md`).
+- Google sign-in added on Login/SignUp with Firestore profile bootstrap (`02c-firebase-google-auth.md`).
+- Phase 2 feed: Threads-style composer, conversation posts, For You / Following tabs (`05-feed-and-composer.md`).
+- Phase 3 conversations: `/post/[username]/[postId]` thread route, reply composer, notification deep links (`06-post-conversations.md`).

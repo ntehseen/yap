@@ -20,9 +20,9 @@ export default function handleUpdateHeartNotifcation({
   let heartArray;
 
   if (heartType === 'like') {
-    textInfo = 'liked your post';
+    textInfo = 'liked your yap';
   } else {
-    textInfo = 'commented on your post';
+    textInfo = 'replied to your yap';
   }
 
   async function getOtherUsersHeartArray() {

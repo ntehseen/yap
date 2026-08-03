@@ -1,11 +1,9 @@
- 
 import React from 'react';
 import imageCompression from 'browser-image-compression';
-import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { userDetailTypes } from './atoms';
+import { uploadToCloudinary } from './uploadToCloudinary';
 
 interface Props {
-  e: any;
+  e: React.ChangeEvent<HTMLInputElement>;
   location: string;
   username: string;
   maxWidthOrHeight: number;
@@ -19,17 +17,19 @@ async function handleUploadToCloud({
   maxWidthOrHeight,
   setLoading,
 }: Props) {
-  const fileType = e.target.files[0].type;
-  const imageFile = e.target.files[0];
+  const file = e.target.files?.[0];
+  if (!file) {
+    return { photoURL: undefined as string | undefined };
+  }
+
+  const fileType = file.type;
   const options = {
     maxSizeMB: 1,
     maxWidthOrHeight,
     useWebWorker: true,
   };
-  const storage = getStorage();
-  const storageRef = ref(storage, `${location}/${username}`);
 
-  let photoURL;
+  let photoURL: string | undefined;
 
   if (
     fileType === 'image/png' ||
@@ -38,22 +38,16 @@ async function handleUploadToCloud({
   ) {
     setLoading(true);
 
-    // compress the image
-    const compressedFile = await imageCompression(imageFile, options);
-
-    // upload to storage, and then retrieve the usable URL
-    await uploadBytes(storageRef, compressedFile).then(() => {
-      // image uplaoded
-    });
-    await getDownloadURL(ref(storage, `${location}/${username}`))
-      .then((url) => {
-        // setPhotoURL(url);
-        photoURL = url;
-      })
-      .catch((error) => {
-        console.log(error);
-        setLoading(false);
+    try {
+      const compressedFile = await imageCompression(file, options);
+      photoURL = await uploadToCloudinary(compressedFile, {
+        folder: `yap/${location}`,
+        publicId: `${username}_${Date.now()}`,
       });
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
   } else {
     console.log('please only use .png, .jpg, .jpeg file types');
   }
@@ -62,14 +56,20 @@ async function handleUploadToCloud({
 }
 
 interface handleUploadImageProps {
-  e: any;
+  e: React.ChangeEvent<HTMLInputElement>;
   location: string;
   username: string;
   maxWidthOrHeight: number;
   chatRoomIDs: string[] | null;
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   setAddPhoto: React.Dispatch<React.SetStateAction<boolean>>;
-  handleImgURLFunction: any;
+  handleImgURLFunction: (args: {
+    url: string;
+    username: string;
+    chatRoomIDs?: string[] | null;
+    setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+    setAddPhoto: React.Dispatch<React.SetStateAction<boolean>>;
+  }) => void | Promise<void>;
 }
 
 function handleUploadImage({
@@ -83,15 +83,20 @@ function handleUploadImage({
   handleImgURLFunction,
 }: handleUploadImageProps) {
   async function handler() {
-    const userDetails: userDetailTypes = await handleUploadToCloud({
+    const result = await handleUploadToCloud({
       e,
       location,
       username,
       maxWidthOrHeight,
       setLoading,
     });
+
+    if (!result.photoURL) {
+      return;
+    }
+
     handleImgURLFunction({
-      url: userDetails.photoURL!,
+      url: result.photoURL,
       username,
       chatRoomIDs,
       setLoading,

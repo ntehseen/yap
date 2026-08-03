@@ -1,6 +1,5 @@
 import React from 'react';
 import { doc, getFirestore, updateDoc } from 'firebase/firestore';
-import { deleteObject, getStorage, ref } from 'firebase/storage';
 import app from './firbaseConfig';
 
 interface Props {
@@ -17,20 +16,14 @@ export default function handleRemoveStory({
   setLoading(true);
 
   const db = getFirestore(app);
-  const storage = getStorage();
   const userRef = doc(db, 'users', username);
-  const storyStorageRef = ref(storage, `stories/${username}`);
 
-  // remove story from user db
+  // Clear story in Firestore. Cloudinary file is left in place on free unsigned uploads.
   updateDoc(userRef, {
     story: '',
     storyViews: [],
-  });
-
-  // Delete story image from cloud storage
-  deleteObject(storyStorageRef)
+  })
     .then(() => {
-      // File deleted successfully
       setLoading(false);
       setAddPhoto(false);
     })

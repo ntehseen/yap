@@ -2,7 +2,7 @@
 
 Maps features to important files at the Yap repo root. Update this file whenever features move or new Yappers modules appear.
 
-**Last updated:** 2026-08-03 (Phase 1 foundation)  
+**Last updated:** 2026-08-03 (Phase 3 conversations)  
 **Related chapter:** [`01-starter-codebase-audit.md`](./01-starter-codebase-audit.md)
 
 ---
@@ -43,6 +43,7 @@ Maps features to important files at the Yap repo root. Update this file whenever
 | Explore users | `/Explore` | `pages/Explore.tsx` | 08 |
 | Messages | `/Inbox` | `pages/Inbox.tsx` | 09 |
 | Profile | `/[Profile]` | `pages/[Profile].tsx` | 07 |
+| Post thread | `/post/[username]/[postId]` | `pages/post/[username]/[postId].tsx` | 06 |
 | Stub API | `/api/hello` | `pages/api/hello.ts` | — |
 
 ---
@@ -90,7 +91,7 @@ Maps features to important files at the Yap repo root. Update this file whenever
 
 | Concern | Files | Data | Docs |
 | --- | --- | --- | --- |
-| Home page layout | `pages/index.tsx` | `followingArray`, `homePagePosts` | 05 |
+| Home page layout | `pages/index.tsx`, `components/homePage/FeedComposer.tsx` | `followingArray`, `homePagePosts`, `userPosts` | 05 |
 | Post card | `components/homePage/HomePagePost.tsx` | `{username}Posts` latest | 05 |
 | Caption / header comments snippet | `components/homePage/HomePagePostHeaderComments.tsx` | post `comments` | 06 |
 | Empty feed filler | `components/homePage/NoPostsFiller.tsx` | — | 05 |
@@ -106,12 +107,13 @@ Maps features to important files at the Yap repo root. Update this file whenever
 
 | Concern | Files | Data | Docs |
 | --- | --- | --- | --- |
-| Create post (upload + caption) | `components/header/AddNewPost.tsx`, `util/handleAddNewPost.ts` | Storage `posts/`, `{username}Posts`, `users.postCount` | 05 |
-| Generic image upload helper | `util/handleUploadImage.ts` | Storage | 05 |
+| Create post (upload + caption) | `components/header/AddNewPost.tsx`, `util/handleAddNewPost.ts` (`publishYap`), `util/uploadToCloudinary.ts` | Cloudinary + `{username}Posts`, `users.postCount` | 05, 02b |
+| Generic image upload helper | `util/handleUploadImage.ts`, `util/uploadToCloudinary.ts` | Cloudinary | 05, 02b |
 | Like / unlike | `util/handleLikePost.ts` | post `likes`, `users.likedPosts` | 06 |
 | Heart notification write | `util/handleUpdateHeartNotification.ts`, `handleResetNewHears.ts` | `users.heartNotifications`, `newHeart` | 10 |
-| Comment send | `util/handleSendPostMessage.ts`, `components/PostTextArea.tsx` | post `comments` array | 06 |
-| Post detail modal | `components/PostPopUp.tsx` | same post doc | 06 |
+| Comment send | `util/handleSendPostMessage.ts`, `components/PostTextArea.tsx`, `components/post/ReplyComposer.tsx` | post `comments` array | 06 |
+| Post detail route | `pages/post/[username]/[postId].tsx`, `hooks/usePostDocument.ts`, `components/post/PostThread.tsx`, `ReplyItem.tsx`, `ReplyComposer.tsx` | `{username}Posts/{postId}` | 06 |
+| Post detail modal (legacy) | `components/PostPopUp.tsx` | same post doc | 06 |
 | Emoji UI | `components/EmojiSelector.tsx`, `util/emojiArray.ts`, `hooks/useHandleEmojiPopUp.ts` | — | 05 |
 | Autosize textarea | `react-textarea-autosize` via `PostTextArea` | — | 05 |
 

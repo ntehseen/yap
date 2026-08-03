@@ -29,11 +29,14 @@ function handleSendPostMessage({
 
   const date = new Date().toLocaleDateString();
 
-  // submit on key enter
+  const trimmed = commentText.trim();
+  if (!trimmed) return;
+
+  // submit on key enter / send button / programmatic ReplyComposer submit
   if (
     e.code === 'Enter' ||
     e.code === 'NumpadEnter' ||
-    e.target.id === 'sendMessage'
+    e.target?.id === 'sendMessage'
   ) {
     const db = getFirestore(app);
     const docRef = doc(
@@ -43,7 +46,7 @@ function handleSendPostMessage({
     );
 
     const newComment = {
-      text: commentText,
+      text: trimmed,
       avatarURL: userDetails.photoURL,
       username: userDetails.displayName,
       createdAt: date,

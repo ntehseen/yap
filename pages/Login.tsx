@@ -9,6 +9,7 @@ import atoms from '../util/atoms';
 import useHandleSignIn from '../hooks/useHandleSignIn';
 import handleSignIn from '../util/handleSignIn';
 import YappersLogo from '../components/brand/YappersLogo';
+import GoogleSignInButton from '../components/auth/GoogleSignInButton';
 
 const Login: NextPage = () => {
   const [listeners] = useAtom(atoms.listeners);
@@ -18,6 +19,8 @@ const Login: NextPage = () => {
   const [passwordFormErrors, setPasswordFormErrors] = React.useState('');
   const [, setUsernameFormErrors] = React.useState('');
   const [isSubmit, setIsSubmit] = React.useState(false);
+  const [googleLoading, setGoogleLoading] = React.useState(false);
+  const [authError, setAuthError] = React.useState('');
 
   useSetFormErrors({
     email,
@@ -102,6 +105,20 @@ const Login: NextPage = () => {
               <YappersLogo href="/Login" />
             </div>
             <div className="w-full px-5 sm:px-10">
+              <GoogleSignInButton
+                listeners={listeners}
+                setIsSubmit={setIsSubmit}
+                setError={setAuthError}
+                setLoading={setGoogleLoading}
+                loading={googleLoading}
+              />
+              <div className="mb-5 flex h-0 items-center justify-center">
+                <div className="w-full border-b border-border" />
+                <p className="mx-2 text-sm font-semibold text-muted-foreground">
+                  OR
+                </p>
+                <div className="w-full border-b border-border" />
+              </div>
               <form
                 action=""
                 className="signInPageFormContainer"
@@ -122,7 +139,7 @@ const Login: NextPage = () => {
                 <label htmlFor="signInPageEmail">
                   {' '}
                   <input
-                    className=" w-full border border-stone-300 bg-[#fafafa] px-2 py-[7px] text-sm focus:outline-none"
+                    className=" w-full border border-border bg-muted px-2 py-[7px] text-sm focus:outline-none"
                     type="email"
                     id="signInPageEmail"
                     value={email}
@@ -136,7 +153,7 @@ const Login: NextPage = () => {
                 <label htmlFor="signInPagePassword">
                   {' '}
                   <input
-                    className="w-full border border-stone-300 bg-[#fafafa] px-2 py-[7px] text-sm focus:outline-none"
+                    className="w-full border border-border bg-muted px-2 py-[7px] text-sm focus:outline-none"
                     type="password"
                     id="signInPagePassword"
                     value={password}
@@ -145,7 +162,7 @@ const Login: NextPage = () => {
                   />
                 </label>
                 <p className="h-[20px] max-w-[220px] text-[10px] text-red-600">
-                  {passwordFormErrors}
+                  {passwordFormErrors || authError}
                 </p>
                 <button
                   className={`${
@@ -157,15 +174,8 @@ const Login: NextPage = () => {
                 >
                   Log In
                 </button>
-                <div className="mb-5 flex h-0 items-center justify-center">
-                  <div className="w-full border-b border-border" />
-                  <p className="mx-2 text-sm font-semibold text-muted-foreground">
-                    OR
-                  </p>
-                  <div className="w-full border-b border-border" />
-                </div>
                 <button
-                  className="mb-10 w-full rounded-[4px] bg-primary px-2 py-1 text-sm font-semibold text-primary-foreground"
+                  className="mb-10 w-full rounded-[4px] border border-border bg-transparent px-2 py-1 text-sm font-semibold text-foreground hover:bg-muted"
                   type="button"
                   onClick={(e: any) =>
                     handleSignIn({

@@ -8,6 +8,7 @@ import useHandleSignIn from '../hooks/useHandleSignIn';
 import useSetFormErrors from '../hooks/useSetFormErrors';
 import handleCreateUser from '../util/handleCreateUser';
 import YappersLogo from '../components/brand/YappersLogo';
+import GoogleSignInButton from '../components/auth/GoogleSignInButton';
 
 const SignUp: NextPage = () => {
   const [email, setEmail] = React.useState('');
@@ -18,6 +19,8 @@ const SignUp: NextPage = () => {
   const [usernameFormErrors, setUsernameFormErrors] = React.useState('');
   const [isSubmit, setIsSubmit] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
+  const [googleLoading, setGoogleLoading] = React.useState(false);
+  const [authError, setAuthError] = React.useState('');
 
   const [listeners] = useAtom(atoms.listeners);
 
@@ -60,6 +63,20 @@ const SignUp: NextPage = () => {
               <p>Sign up to yap with the X-Clash community.</p>
             </div>
             <div className="w-full px-10">
+              <GoogleSignInButton
+                listeners={listeners}
+                setIsSubmit={setIsSubmit}
+                setError={setAuthError}
+                setLoading={setGoogleLoading}
+                loading={googleLoading}
+              />
+              <div className="mb-5 flex h-0 items-center justify-center">
+                <div className="w-full border-b border-border" />
+                <p className="mx-2 text-sm font-semibold text-muted-foreground">
+                  OR
+                </p>
+                <div className="w-full border-b border-border" />
+              </div>
               <form
                 action=""
                 className="signInPageFormContainer"
@@ -119,7 +136,7 @@ const SignUp: NextPage = () => {
                   />
                 </label>
                 <p className="h-[20px] text-[10px] text-red-600">
-                  {passwordFormErrors}
+                  {passwordFormErrors || authError}
                 </p>
                 <button
                   className={`${

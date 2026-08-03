@@ -6,7 +6,7 @@ import app from './firbaseConfig';
 interface Props {
   url: string;
   username: string;
-  chatRoomIDs: string[];
+  chatRoomIDs?: string[] | null;
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   setAddPhoto: React.Dispatch<React.SetStateAction<boolean>>;
 }
@@ -38,8 +38,7 @@ async function handleUpdateProfilePhoto({
     });
 
   // update all subscribed chatrooms with new image
-
-  chatRoomIDs.forEach((chatRoomID: string) => {
+  (chatRoomIDs || []).forEach((chatRoomID: string) => {
     updateDoc(doc(db, chatRoomID, 'users'), {
       [`${username}Avatar`]: url,
     });

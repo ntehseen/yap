@@ -31,7 +31,11 @@ function handleLikePost({
   );
   const userRef = doc(db, 'users', userDetails.displayName!);
 
-  if (e.target.id === 'like') {
+  const action =
+    (e.currentTarget as HTMLElement | undefined)?.id ||
+    (e.target as HTMLElement | undefined)?.id;
+
+  if (action === 'like') {
     updateDoc(postDocRef, {
       likes: arrayUnion(userDetails.displayName),
     });
@@ -44,7 +48,7 @@ function handleLikePost({
       postInformation,
       heartType: 'like',
     });
-  } else if (e.target.id === 'unlike') {
+  } else if (action === 'unlike') {
     updateDoc(postDocRef, {
       likes: arrayRemove(userDetails.displayName),
     });
