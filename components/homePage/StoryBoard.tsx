@@ -1,4 +1,3 @@
- 
 import React from 'react';
 import { useAtom } from 'jotai';
 import AddStory from './AddStory';
@@ -6,40 +5,33 @@ import StoryBoardTag from './StoryBoardTag';
 import atoms from '../../util/atoms';
 
 function StoryBoard() {
-  const [darkMode] = useAtom(atoms.darkMode);
   const [storiesArray] = useAtom(atoms.storiesArray);
   const [storiesLoading, setStoriesLoading] = useAtom(atoms.storiesLoading);
 
   const circles = [1, 2, 3, 4, 5];
 
+  React.useEffect(() => {
+    // Stories are optional chrome; don't leave the rail in a loading trap.
+    const timer = window.setTimeout(() => setStoriesLoading(false), 800);
+    return () => window.clearTimeout(timer);
+  }, [setStoriesLoading, storiesArray]);
+
   return (
-    <div
-      className={`${
-        darkMode ? 'scrollbarDark' : 'scrollbarLight'
-      }  scrollbar mt-6 flex overflow-x-auto rounded-lg border border-stone-300 bg-white py-4 pl-4 dark:border-stone-700 dark:bg-[#1c1c1c]`}
-    >
+    <div className="scrollbar flex gap-3 overflow-x-auto py-1">
       <AddStory />
-      <div
-        className={`${storiesLoading ? 'fixed opacity-0' : ''} flex`}
-        onLoad={() => {
-          setStoriesLoading(false);
-        }}
-      >
-        {storiesArray.map((username, index) => (
-          <StoryBoardTag username={username} key={username + index} />
-        ))}
-      </div>
       {storiesLoading ? (
-        <div className="flex w-full justify-between gap-2">
+        <div className="flex gap-3">
           {circles.map((index) => (
             <div
               key={index}
-              className="h-16 w-16 min-w-[64px] animate-pulse rounded-full bg-[#ebebeb] dark:bg-[#313131]"
+              className="h-14 w-14 shrink-0 animate-pulse rounded-full bg-muted"
             />
           ))}
         </div>
       ) : (
-        ''
+        storiesArray.map((username, index) => (
+          <StoryBoardTag username={username} key={username + index} />
+        ))
       )}
     </div>
   );

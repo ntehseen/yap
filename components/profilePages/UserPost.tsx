@@ -1,8 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import CommentSVG from '../svgComps/CommentSVG';
-import HeartSVG from '../svgComps/HeartSVG';
+import { Heart, MessageCircle } from 'lucide-react';
 import { postType } from '../../util/atoms';
 
 function UserPost({
@@ -12,7 +11,7 @@ function UserPost({
   postInformation: postType;
   postUserDetails: any;
 }) {
-  const [postInfo, setPostInfo] = React.useState(false);
+  const [hovered, setHovered] = React.useState(false);
   const username = postUserDetails?.username as string | undefined;
   const href =
     username && postInformation.postID
@@ -20,46 +19,44 @@ function UserPost({
       : '#';
   const hasImage = Boolean(postInformation.imgURL);
   const previewText = postInformation.comments?.[0]?.text || '';
+  const replyCount = Math.max((postInformation.comments?.length || 1) - 1, 0);
 
   return (
-    <Link href={href} className="relative block overflow-hidden">
+    <Link
+      href={href}
+      className="relative aspect-square overflow-hidden bg-muted"
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
       {hasImage ? (
         <Image
-          className="h-[175px] w-[300px] select-none bg-[#ebebeb] object-cover dark:bg-[#313131] sm:h-[300px]"
+          className="h-full w-full select-none object-cover"
           src={postInformation.imgURL}
-          alt="user post"
-          width="0"
-          height="0"
-          sizes="100vw"
-          priority
+          alt=""
+          width={0}
+          height={0}
+          sizes="33vw"
         />
       ) : (
-        <div className="flex h-[175px] w-full items-end bg-muted p-3 sm:h-[300px]">
-          <p className="line-clamp-6 text-sm text-foreground">{previewText}</p>
+        <div className="flex h-full w-full items-end bg-shell-elevated p-3">
+          <p className="line-clamp-5 text-left text-xs leading-snug text-foreground sm:text-sm">
+            {previewText || 'Yap'}
+          </p>
         </div>
       )}
-      <div
-        className="absolute top-0 left-0 flex h-full w-full cursor-pointer items-center justify-center hover:bg-[#00000049]"
-        onMouseEnter={() => setPostInfo(true)}
-        onMouseLeave={() => setPostInfo(false)}
-      >
-        {postInfo ? (
-          <div className="flex items-center gap-2 text-white sm:gap-5">
-            <div className="flex items-center">
-              <HeartSVG fillColor="white" height="20" width="20" />
-              <p className="pl-1 text-lg font-semibold">
-                {postInformation.likes.length}
-              </p>
-            </div>
-            <div className="flex items-center">
-              <CommentSVG outline="white" height="20" width="20" fill="white" />
-              <p className="pl-1 text-lg font-semibold">
-                {Math.max(postInformation.comments.length - 1, 0)}
-              </p>
-            </div>
-          </div>
-        ) : null}
-      </div>
+
+      {hovered ? (
+        <div className="absolute inset-0 flex items-center justify-center gap-4 bg-black/45 text-white">
+          <span className="inline-flex items-center gap-1 text-sm font-semibold">
+            <Heart className="h-4 w-4 fill-current" />
+            {postInformation.likes?.length || 0}
+          </span>
+          <span className="inline-flex items-center gap-1 text-sm font-semibold">
+            <MessageCircle className="h-4 w-4" />
+            {replyCount}
+          </span>
+        </div>
+      ) : null}
     </Link>
   );
 }

@@ -68,6 +68,7 @@ async function submitUser({
        
       userId: userId,
       avatarURL: '',
+      bio: '',
       chatRoomIds: [],
       messageCount: 0,
       likes: false,
@@ -81,6 +82,13 @@ async function submitUser({
       heartNotifications: [],
       newHeart: false,
       usernameQuery: handleCreateUsernameQueryArray(username),
+      xClash: {
+        server: '',
+        alliance: '',
+        castleLevel: '',
+        combatPower: '',
+        role: '',
+      },
     })
       .then(() => {
         // Profile updated!

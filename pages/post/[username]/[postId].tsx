@@ -51,7 +51,7 @@ const PostDetail: NextPage = () => {
           </p>
           <button
             type="button"
-            className="mt-6 text-sm font-medium text-accent hover:underline"
+            className="mt-6 text-sm font-medium text-foreground hover:underline"
             onClick={() => router.push('/')}
           >
             Back to Home

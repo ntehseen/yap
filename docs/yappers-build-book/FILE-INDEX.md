@@ -2,7 +2,7 @@
 
 Maps features to important files at the Yap repo root. Update this file whenever features move or new Yappers modules appear.
 
-**Last updated:** 2026-08-03 (Phase 3 conversations)  
+**Last updated:** 2026-08-03 (Phase 4 profiles & discovery)  
 **Related chapter:** [`01-starter-codebase-audit.md`](./01-starter-codebase-audit.md)
 
 ---
@@ -123,8 +123,9 @@ Maps features to important files at the Yap repo root. Update this file whenever
 
 | Concern | Files | Data | Docs |
 | --- | --- | --- | --- |
-| Profile page | `pages/[Profile].tsx` | `users`, `{username}Posts` | 07 |
+| Profile page | `pages/[Profile].tsx`, `components/profilePages/ProfileHeader.tsx`, `ProfileTabs.tsx`, `EditProfileModal.tsx`, `XClashBadgeRow.tsx` | `users`, `{username}Posts`, `bio`, `xClash` | 07 |
 | Profile posts grid item | `components/profilePages/UserPost.tsx` | posts | 07 |
+| Profile update | `util/handleUpdateProfile.ts` | `users.bio`, `users.xClash`, `usernameQuery` | 07 |
 | Other user posts fetch | `hooks/useGetOtherUserPosts.ts` | `{name}Posts` | 07 |
 | Add / change profile photo | `components/profilePages/AddProfilePhoto.tsx`, `util/handleUpdateProfilePhoto.ts`, `handleRemoveProfilePhoto.ts` | Storage `profilePhotos/`, Auth photoURL, chat meta | 07 |
 | Follow | `util/handleFollowUser.ts` | `followers` / `following` arrays | 07 |

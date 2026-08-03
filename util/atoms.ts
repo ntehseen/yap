@@ -28,8 +28,18 @@ export interface followingFollowerInfo {
   avatarURL: string;
 }
 
+/** Optional X-Clash game fields nested on the user profile. */
+export interface xClashProfileTypes {
+  server?: string;
+  alliance?: string;
+  castleLevel?: string;
+  combatPower?: string;
+  role?: string;
+}
+
 export interface notificationTypes {
   avatarURL?: string;
+  bio?: string;
   chatRoomIds?: string[];
   followers?: string[];
   following?: string[];
@@ -43,6 +53,7 @@ export interface notificationTypes {
   usernameQuery?: string[];
   newHeart?: boolean;
   heartNotifications?: heartDetails[];
+  xClash?: xClashProfileTypes;
 }
 
 interface storyTypes {
@@ -63,6 +74,7 @@ export interface postType {
   likeCount: number;
   likes: string[];
   postID: string;
+  reposts?: string[];
 }
 
 export interface userPostsInfoType {
@@ -78,7 +90,7 @@ interface allChatRoomMessagesTypes {
   [index: string]: chatRoomMessagesTypes[];
 }
 
-const darkMode = atom(false);
+const darkMode = atom(true);
 const userStatus = atom(false);
 const allChatRoomMessages = atom<allChatRoomMessagesTypes>({});
 const userDetails = atom<userDetailTypes | User>({});

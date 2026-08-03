@@ -1,10 +1,11 @@
 function handleCreateUsernameQueryArray(username: string) {
-  const usernameArray = username.split('');
+  const normalized = username.toLowerCase();
+  const usernameArray = normalized.split('');
   const usernameQueryArray = [''];
 
-  usernameArray.forEach((chracter: string, index: number) => {
+  usernameArray.forEach((character: string, index: number) => {
     const mergerExtract = usernameQueryArray[index];
-    const mergerResult = mergerExtract.concat(chracter);
+    const mergerResult = mergerExtract.concat(character);
 
     usernameQueryArray.push(mergerResult);
   });

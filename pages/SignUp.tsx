@@ -37,7 +37,7 @@ const SignUp: NextPage = () => {
 
   if (loading) {
     return (
-      <div className="flex h-[100vh] w-full items-center justify-center bg-background">
+      <div className="flex min-h-dvh w-full items-center justify-center bg-background">
         <YappersLogo />
       </div>
     );
@@ -53,106 +53,106 @@ const SignUp: NextPage = () => {
         />
         <link rel="icon" href="/instagram.png" />
       </Head>
-      <div className="flex min-h-[100vh] w-full items-center justify-center bg-background">
-        <div>
-          <div className="flex max-w-[350px] flex-col items-center justify-center border border-border bg-card">
-            <div className="flex h-auto w-full justify-center pt-10 pb-5">
-              <YappersLogo href="/SignUp" />
+      <div className="flex min-h-dvh w-full items-center justify-center bg-background px-4 py-10">
+        <div className="w-full max-w-[420px]">
+          <div className="rounded-2xl border border-border bg-card px-6 py-8 sm:px-10">
+            <div className="mb-4 flex justify-center">
+              <YappersLogo href="/SignUp" className="scale-110" />
             </div>
-            <div className="px-10 pb-5 text-center font-semibold text-muted-foreground">
-              <p>Sign up to yap with the X-Clash community.</p>
+            <p className="mb-6 text-center text-sm font-medium text-muted-foreground">
+              Sign up to yap with the X-Clash community.
+            </p>
+            <GoogleSignInButton
+              listeners={listeners}
+              setIsSubmit={setIsSubmit}
+              setError={setAuthError}
+              setLoading={setGoogleLoading}
+              loading={googleLoading}
+            />
+            <div className="my-5 flex items-center gap-3">
+              <div className="h-px flex-1 bg-border" />
+              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                Or
+              </p>
+              <div className="h-px flex-1 bg-border" />
             </div>
-            <div className="w-full px-10">
-              <GoogleSignInButton
-                listeners={listeners}
-                setIsSubmit={setIsSubmit}
-                setError={setAuthError}
-                setLoading={setGoogleLoading}
-                loading={googleLoading}
-              />
-              <div className="mb-5 flex h-0 items-center justify-center">
-                <div className="w-full border-b border-border" />
-                <p className="mx-2 text-sm font-semibold text-muted-foreground">
-                  OR
-                </p>
-                <div className="w-full border-b border-border" />
-              </div>
-              <form
-                action=""
-                className="signInPageFormContainer"
-                onSubmit={(e: any) =>
-                  handleCreateUser({
-                    e,
-                    listeners,
-                    username,
-                    email,
-                    password,
-                    passwordFormErrors,
-                    emailFormErrors,
-                    usernameFormErrors,
-                    setIsSubmit,
-                    setLoading,
-                    setPasswordFormErrors,
-                  })
-                }
+            <form
+              action=""
+              className="signInPageFormContainer"
+              onSubmit={(e: any) =>
+                handleCreateUser({
+                  e,
+                  listeners,
+                  username,
+                  email,
+                  password,
+                  passwordFormErrors,
+                  emailFormErrors,
+                  usernameFormErrors,
+                  setIsSubmit,
+                  setLoading,
+                  setPasswordFormErrors,
+                })
+              }
+            >
+              <label htmlFor="signInPageUserName" className="block">
+                <input
+                  className="w-full rounded-md border border-border bg-muted px-3 py-3 text-base text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                  type="text"
+                  id="signInPageUserName"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  placeholder="Username"
+                  autoComplete="username"
+                />
+              </label>
+              <p className="min-h-[20px] pt-1 text-xs text-destructive">
+                {usernameFormErrors}
+              </p>
+              <label htmlFor="signInPageEmail" className="mt-1 block">
+                <input
+                  className="w-full rounded-md border border-border bg-muted px-3 py-3 text-base text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                  type="email"
+                  id="signInPageEmail"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Email address"
+                  autoComplete="email"
+                />
+              </label>
+              <p className="min-h-[20px] pt-1 text-xs text-destructive">
+                {emailFormErrors}
+              </p>
+              <label htmlFor="signInPagePassword" className="mt-1 block">
+                <input
+                  className="w-full rounded-md border border-border bg-muted px-3 py-3 text-base text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                  type="password"
+                  id="signInPagePassword"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Password"
+                  autoComplete="new-password"
+                />
+              </label>
+              <p className="min-h-[20px] pt-1 text-xs text-destructive">
+                {passwordFormErrors || authError}
+              </p>
+              <button
+                className={`${
+                  emailFormErrors === '' &&
+                  passwordFormErrors === '' &&
+                  usernameFormErrors === ''
+                    ? 'bg-primary text-primary-foreground hover:opacity-90'
+                    : 'pointer-events-none cursor-default bg-primary/40 text-primary-foreground'
+                } mt-4 w-full rounded-md px-3 py-3 text-sm font-semibold`}
+                type="submit"
               >
-                <label htmlFor="signInPageUserName">
-                  {' '}
-                  <input
-                    className="w-full border border-border bg-muted px-2 py-[7px] text-sm focus:outline-none"
-                    type="text"
-                    id="signInPageUserName"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    placeholder="Username"
-                  />
-                </label>
-                <p className="h-[30px] text-[10px] text-red-600">
-                  {usernameFormErrors}
-                </p>
-                <label htmlFor="signInPageEmail">
-                  {' '}
-                  <input
-                    className=" w-full border border-border bg-muted px-2 py-[7px] text-sm focus:outline-none"
-                    type="email"
-                    id="signInPageEmail"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Email address"
-                  />
-                </label>
-                <p className="h-[20px] pb-2 text-[10px] text-red-600">
-                  {emailFormErrors}
-                </p>
-                <label htmlFor="signInPagePassword">
-                  {' '}
-                  <input
-                    className="w-full border border-border bg-muted px-2 py-[7px] text-sm focus:outline-none"
-                    type="password"
-                    id="signInPagePassword"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Password"
-                  />
-                </label>
-                <p className="h-[20px] text-[10px] text-red-600">
-                  {passwordFormErrors || authError}
-                </p>
-                <button
-                  className={`${
-                    emailFormErrors === '' && passwordFormErrors === ''
-                      ? 'bg-primary text-primary-foreground'
-                      : 'pointer-events-none cursor-default bg-primary/40 text-primary-foreground'
-                  } my-5 w-full rounded-[4px]  px-2 py-1 text-sm font-semibold`}
-                  type="submit"
-                >
-                  Sign Up
-                </button>
-              </form>
-            </div>
+                Sign Up
+              </button>
+            </form>
           </div>
-          <div className="mt-2 flex max-w-[350px] justify-center border border-border bg-card py-5 text-[14px]">
-            <p>Have an account?</p>
+          <div className="mt-3 flex justify-center rounded-2xl border border-border bg-card py-5 text-sm">
+            <p className="text-muted-foreground">Have an account?</p>
             <button
               className="ml-1 font-semibold text-primary"
               type="button"

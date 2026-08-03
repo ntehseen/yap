@@ -3,7 +3,6 @@ import type { NextPage } from 'next';
 import Head from 'next/head';
 import { useAtom } from 'jotai';
 import HomePagePost from '../components/homePage/HomePagePost';
-import StoryBoard from '../components/homePage/StoryBoard';
 import LoadingPage from '../components/loadingComps/LoadingPage';
 import atoms from '../util/atoms';
 import LoadingPosts from '../components/loadingComps/LoadingPosts';
@@ -34,12 +33,19 @@ const Home: NextPage = () => {
     return following.length ? following : self ? [self] : ['null'];
   }, [followingArray, tab, userDetails.displayName]);
 
+  // Avoid the old `fixed opacity-0` image preload hack — it breaks Safari layout.
+  React.useEffect(() => {
+    if (followingArrayStatus) {
+      setPostsLoading(false);
+    }
+  }, [followingArrayStatus, setPostsLoading]);
+
   if (!userStatus) {
     return <LoadingPage checkingUserRoute={false} />;
   }
 
   return (
-    <AppShell page="Home" showRightSidebar>
+    <AppShell page="Home">
       <Head>
         <title>Home • Yap</title>
         <meta
@@ -49,32 +55,32 @@ const Home: NextPage = () => {
         <link rel="icon" href="/instagram.png" />
       </Head>
 
-      <div className="sticky top-14 z-20 border-b border-border bg-background/90 backdrop-blur xl:top-0">
-        <div className="flex">
+      <div className="sticky top-0 z-20 bg-[hsl(var(--feed))] max-md:top-14 max-md:bg-background">
+        <div className="flex h-[60px] items-stretch border-b border-white/[0.08]">
           <button
             type="button"
             className={cn(
-              'relative flex-1 py-3 text-sm font-medium text-muted-foreground hover:bg-muted/40',
+              'relative flex flex-1 items-center justify-center text-[15px] font-medium text-muted-foreground transition-colors hover:bg-white/[0.03]',
               tab === 'forYou' && 'font-semibold text-foreground'
             )}
             onClick={() => setTab('forYou')}
           >
-            For You
+            For you
             {tab === 'forYou' ? (
-              <span className="absolute bottom-0 left-1/2 h-0.5 w-12 -translate-x-1/2 rounded-full bg-accent" />
+              <span className="absolute bottom-0 left-1/2 h-[1.5px] w-14 -translate-x-1/2 bg-foreground" />
             ) : null}
           </button>
           <button
             type="button"
             className={cn(
-              'relative flex-1 py-3 text-sm font-medium text-muted-foreground hover:bg-muted/40',
+              'relative flex flex-1 items-center justify-center text-[15px] font-medium text-muted-foreground transition-colors hover:bg-white/[0.03]',
               tab === 'following' && 'font-semibold text-foreground'
             )}
             onClick={() => setTab('following')}
           >
             Following
             {tab === 'following' ? (
-              <span className="absolute bottom-0 left-1/2 h-0.5 w-12 -translate-x-1/2 rounded-full bg-accent" />
+              <span className="absolute bottom-0 left-1/2 h-[1.5px] w-16 -translate-x-1/2 bg-foreground" />
             ) : null}
           </button>
         </div>
@@ -82,27 +88,19 @@ const Home: NextPage = () => {
 
       <FeedComposer />
 
-      <div className="border-b border-border">
-        <StoryBoard />
-      </div>
+      {postsLoading || !followingArrayStatus ? <LoadingPosts /> : null}
 
-      <div
-        className={`${postsLoading ? 'fixed opacity-0' : ''}`}
-        onLoad={() => setPostsLoading(false)}
-      >
-        {followingArrayStatus ? (
-          <div>
-            {feedUsernames.map((username, index) => (
-              <HomePagePost
-                username={username}
-                index={index}
-                key={`${tab}-${username}-${index}`}
-              />
-            ))}
-          </div>
-        ) : null}
-      </div>
-      {postsLoading ? <LoadingPosts /> : null}
+      {!postsLoading && followingArrayStatus ? (
+        <div>
+          {feedUsernames.map((username, index) => (
+            <HomePagePost
+              username={username}
+              index={index}
+              key={`${tab}-${username}-${index}`}
+            />
+          ))}
+        </div>
+      ) : null}
     </AppShell>
   );
 };

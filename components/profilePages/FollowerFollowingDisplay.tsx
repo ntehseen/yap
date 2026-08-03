@@ -1,7 +1,10 @@
 import React from 'react';
 import handleGetFollowersOrFollowings from '../../util/handleGetFollowersOrFollowings';
 import FollowingFollowerDropDown from './FollowingFollowerDropDown';
-import { followingFollowerInfo, notificationTypes } from '../../util/atoms';
+import {
+  followingFollowerInfo,
+  notificationTypes,
+} from '../../util/atoms';
 
 interface Props {
   showFollowers: boolean;
@@ -26,31 +29,28 @@ export default function FollowerFollowingDisplay({
   >([]);
 
   return (
-    <div className="flex gap-2 text-xs sm:justify-start sm:gap-7 sm:text-base">
-      <p
-        className="mx-auto flex flex-col items-center text-sm text-[#818181] sm:mx-auto sm:flex-row 
-        sm:items-start sm:text-base sm:text-[#231f20] sm:dark:text-slate-100"
-      >
-        <b className="text-[#231f20] dark:text-slate-100 sm:pr-1">
-          {profileNotifications.postCount}
-        </b>{' '}
+    <div className="flex flex-wrap gap-5 text-sm">
+      <p className="text-muted-foreground">
+        <span className="font-semibold text-foreground">
+          {profileNotifications.postCount || 0}
+        </span>{' '}
         posts
       </p>
       <button
         id="followingFollowerDropDown"
-        className="relative mx-auto flex items-center sm:mx-0"
+        className="relative text-muted-foreground"
         type="button"
         onClick={() => {
           setShowFollowers(!showFollowers);
           setShowFollowing(false);
           handleGetFollowersOrFollowings({
             setArray: setFollowersInfo,
-            userListArray: profileNotifications.followers!,
+            userListArray: profileNotifications.followers || [],
           });
         }}
       >
         <FollowingFollowerDropDown
-          count={profileNotifications.followers!.length}
+          count={profileNotifications.followers?.length || 0}
           dropDownName="followers"
           showDropDown={showFollowers}
           usersInfo={followersInfo}
@@ -58,19 +58,19 @@ export default function FollowerFollowingDisplay({
       </button>
       <button
         id="followingFollowerDropDown"
-        className="relative mx-auto flex items-center sm:mx-0"
+        className="relative text-muted-foreground"
         type="button"
         onClick={() => {
           setShowFollowing(!showFollowing);
           setShowFollowers(false);
           handleGetFollowersOrFollowings({
             setArray: setFollowingInfo,
-            userListArray: profileNotifications.following!,
+            userListArray: profileNotifications.following || [],
           });
         }}
       >
         <FollowingFollowerDropDown
-          count={profileNotifications.following!.length}
+          count={profileNotifications.following?.length || 0}
           dropDownName="following"
           showDropDown={showFollowing}
           usersInfo={followingInfo}

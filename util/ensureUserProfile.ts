@@ -87,6 +87,7 @@ export async function ensureUserProfile(user: User) {
     await setDoc(doc(db, 'users', username), {
       userId: user.uid,
       avatarURL: user.photoURL || '',
+      bio: '',
       chatRoomIds: [],
       messageCount: 0,
       likes: false,
@@ -100,6 +101,13 @@ export async function ensureUserProfile(user: User) {
       heartNotifications: [],
       newHeart: false,
       usernameQuery: handleCreateUsernameQueryArray(username),
+      xClash: {
+        server: '',
+        alliance: '',
+        castleLevel: '',
+        combatPower: '',
+        role: '',
+      },
     });
   }
 

@@ -37,6 +37,15 @@ module.exports = {
           DEFAULT: 'hsl(var(--accent) / <alpha-value>)',
           foreground: 'hsl(var(--accent-foreground) / <alpha-value>)',
         },
+        brand: {
+          DEFAULT: 'hsl(var(--brand) / <alpha-value>)',
+        },
+        feed: {
+          DEFAULT: 'hsl(var(--feed) / <alpha-value>)',
+        },
+        icon: {
+          DEFAULT: 'hsl(var(--icon) / <alpha-value>)',
+        },
         popover: {
           DEFAULT: 'hsl(var(--popover) / <alpha-value>)',
           foreground: 'hsl(var(--popover-foreground) / <alpha-value>)',
@@ -53,6 +62,7 @@ module.exports = {
       },
       maxWidth: {
         feed: '680px',
+        content: '56rem',
       },
       keyframes: {
         fadeInOut1: {

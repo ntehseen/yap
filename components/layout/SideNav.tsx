@@ -4,12 +4,12 @@ import { useAtom } from 'jotai';
 import { cn } from '@/lib/utils';
 import YappersLogo from '@/components/brand/YappersLogo';
 import atoms from '@/util/atoms';
-import { Button } from '@/components/ui/button';
 import {
   moreNavItem,
   primaryNavItems,
   profileNavItem,
   type ShellPage,
+  type NavItem,
 } from './navItems';
 
 interface SideNavProps {
@@ -22,17 +22,20 @@ interface SideNavProps {
   hasNewHeart: boolean;
 }
 
+/** Threads desktop rail: 76px, icon-only, vertically centered cluster. */
 function SideNav({
   page,
   onSearch,
   onCreate,
   onNotifications,
   onMore,
-  hasNewMessage,
   hasNewHeart,
 }: SideNavProps) {
   const [userDetails] = useAtom(atoms.userDetails);
-  const items = [...primaryNavItems, profileNavItem(userDetails.displayName)];
+  const items: NavItem[] = [
+    ...primaryNavItems,
+    profileNavItem(userDetails.displayName),
+  ];
 
   function handleAction(action?: string) {
     if (action === 'search') onSearch();
@@ -41,69 +44,87 @@ function SideNav({
     if (action === 'more') onMore();
   }
 
-  return (
-    <aside className="fixed left-0 top-0 z-40 hidden h-screen w-[244px] flex-col border-r border-border bg-shell-elevated px-3 py-4 xl:flex">
-      <div className="mb-8 px-2 pt-2">
-        <YappersLogo />
-      </div>
-      <nav className="flex flex-1 flex-col gap-1" aria-label="Primary">
-        {items.map((item) => {
-          const Icon = item.icon;
-          const active = page === item.id;
-          const content = (
-            <>
-              <span className="relative">
-                <Icon
-                  className={cn('h-6 w-6', active && 'stroke-[2.5]')}
-                  aria-hidden
-                />
-                {item.id === 'Inbox' && hasNewMessage ? (
-                  <span className="absolute -right-1 -top-1 h-2.5 w-2.5 rounded-full bg-destructive" />
-                ) : null}
-                {item.action === 'notifications' && hasNewHeart ? (
-                  <span className="absolute -right-1 -top-1 h-2.5 w-2.5 rounded-full bg-destructive" />
-                ) : null}
-              </span>
-              <span className="xl:inline">{item.label}</span>
-            </>
-          );
+  function renderItem(item: NavItem) {
+    const Icon = item.icon;
+    const active = page === item.id;
+    const isCreate = item.action === 'create';
 
-          if (item.href) {
-            return (
-              <Link key={item.label} href={item.href} className={cn(
-                    'flex items-center gap-4 rounded-lg px-3 py-3 text-sm text-foreground transition-colors hover:bg-muted',
-                    active && 'font-semibold'
-                  )} aria-current={active ? 'page' : undefined}>
-                  {content}
-                </Link>
-            );
-          }
+    const inner = (
+      <span className="relative flex items-center justify-center">
+        {isCreate ? (
+          <span className="threads-nav-create-box">
+            <Icon className="h-5 w-5" strokeWidth={1.75} aria-hidden />
+          </span>
+        ) : (
+          <Icon
+            className={cn('h-6 w-6', active && 'stroke-[2.25]')}
+            strokeWidth={active ? 2.25 : 1.75}
+            aria-hidden
+          />
+        )}
+        {item.action === 'notifications' && hasNewHeart ? (
+          <span className="absolute -right-0.5 -top-0.5 h-2 w-2 rounded-full bg-destructive" />
+        ) : null}
+      </span>
+    );
 
-          return (
-            <Button
-              key={item.label}
-              type="button"
-              variant="ghost"
-              className={cn(
-                'h-auto justify-start gap-4 px-3 py-3 text-sm font-normal',
-                active && 'font-semibold'
-              )}
-              onClick={() => handleAction(item.action)}
-            >
-              {content}
-            </Button>
-          );
-        })}
-      </nav>
-      <Button
+    const className = cn(
+      'threads-nav-btn',
+      isCreate && 'threads-nav-create'
+    );
+
+    if (item.href) {
+      return (
+        <Link
+          key={item.label}
+          href={item.href}
+          className={className}
+          data-active={active}
+          aria-label={item.label}
+          aria-current={active ? 'page' : undefined}
+          title={item.label}
+        >
+          {inner}
+        </Link>
+      );
+    }
+
+    return (
+      <button
+        key={item.label}
         type="button"
-        variant="ghost"
-        className="mt-auto h-auto justify-start gap-4 px-3 py-3 text-sm font-normal"
-        onClick={() => handleAction(moreNavItem.action)}
+        className={className}
+        data-active={active}
+        onClick={() => handleAction(item.action)}
+        aria-label={item.label}
+        title={item.label}
       >
-        <moreNavItem.icon className="h-6 w-6" aria-hidden />
-        <span className="xl:inline">{moreNavItem.label}</span>
-      </Button>
+        {inner}
+      </button>
+    );
+  }
+
+  return (
+    <aside className="threads-rail" aria-label="Primary">
+      <div className="flex h-[60px] w-full items-center justify-center pt-1">
+        <YappersLogo compact className="scale-90" />
+      </div>
+
+      <nav className="flex flex-1 flex-col items-center justify-center gap-1">
+        {items.map(renderItem)}
+      </nav>
+
+      <div className="flex w-full flex-col items-center pb-3">
+        <button
+          type="button"
+          className="threads-nav-btn"
+          onClick={() => handleAction(moreNavItem.action)}
+          aria-label={moreNavItem.label}
+          title={moreNavItem.label}
+        >
+          <moreNavItem.icon className="h-6 w-6" strokeWidth={1.75} aria-hidden />
+        </button>
+      </div>
     </aside>
   );
 }

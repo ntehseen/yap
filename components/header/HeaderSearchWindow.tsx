@@ -16,31 +16,41 @@ function HeaderSearchWindow({
   return (
     <div
       id="headerSearchWindow"
-      className="relative mt-3 h-[min(375px,60vh)] w-full overflow-hidden rounded-md border border-border bg-card text-card-foreground shadow-lg"
+      className="relative mt-3 h-[min(375px,60vh)] w-full overflow-hidden rounded-xl border border-border bg-card text-card-foreground shadow-lg"
     >
       <div className="flex h-full items-center justify-center">
         {loading || searchName === '' ? (
-          <div className="h-8 w-8 ">
+          <div className="h-8 w-8">
             <SpinnerSVG />
           </div>
         ) : (
-          <div className="h-full w-full overflow-y-scroll py-3">
+          <div className="h-full w-full overflow-y-auto py-2">
             {userDetails.length === 0 ? (
-              <div className="flex h-full w-full items-center justify-center">
-                <div className="">No user with this name was found</div>
+              <div className="flex h-full w-full items-center justify-center px-4 text-center text-sm text-muted-foreground">
+                No players match “{searchName}”
               </div>
             ) : (
-              userDetails.map((details, index) => (
-                // item will not be deleted or updated so it is okay to use index as a key
-                 
-                <Link href={`/${details.username}`} key={index}>
-                  <div className="flex cursor-pointer items-center py-3 pl-5 hover:bg-[#f8f8f8] dark:hover:bg-[#131313]">
-                    {' '}
+              userDetails.map((details, index) => {
+                const meta = [
+                  details.xClash?.alliance,
+                  details.xClash?.server
+                    ? `S${details.xClash.server}`
+                    : '',
+                ]
+                  .filter(Boolean)
+                  .join(' · ');
+
+                return (
+                  <Link
+                    href={`/${details.username}`}
+                    key={details.userId || details.username || index}
+                    className="flex items-center gap-3 px-4 py-3 hover:bg-muted/50"
+                  >
                     {details.avatarURL ? (
                       <Image
                         className="h-11 w-11 rounded-full object-cover"
                         src={details.avatarURL}
-                        alt="avatar"
+                        alt=""
                         width="44"
                         height="44"
                       />
@@ -49,10 +59,27 @@ function HeaderSearchWindow({
                         <ProfilePicSVG strokeWidth="1" />
                       </div>
                     )}
-                    <p className="ml-5">{details.username}</p>
-                  </div>
-                </Link>
-              ))
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-semibold text-foreground">
+                        {details.username}
+                      </p>
+                      {details.bio ? (
+                        <p className="truncate text-xs text-muted-foreground">
+                          {details.bio}
+                        </p>
+                      ) : meta ? (
+                        <p className="truncate text-xs text-muted-foreground">
+                          {meta}
+                        </p>
+                      ) : (
+                        <p className="text-xs text-muted-foreground">
+                          {details.followers?.length || 0} followers
+                        </p>
+                      )}
+                    </div>
+                  </Link>
+                );
+              })
             )}
           </div>
         )}

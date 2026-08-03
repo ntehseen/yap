@@ -4,62 +4,214 @@
 
 @layer base {
   :root {
-    --background: 40 10% 97%;
-    --foreground: 220 15% 12%;
-    --muted: 40 8% 92%;
-    --muted-foreground: 220 8% 42%;
+    --background: 0 0% 100%;
+    --foreground: 0 0% 7%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 47%;
     --card: 0 0% 100%;
-    --card-foreground: 220 15% 12%;
-    --border: 220 10% 88%;
-    --input: 220 10% 88%;
-    --ring: 162 72% 42%;
-    --accent: 162 72% 42%;
-    --accent-foreground: 160 40% 8%;
-    --primary: 162 72% 42%;
-    --primary-foreground: 160 40% 8%;
-    --secondary: 220 10% 94%;
-    --secondary-foreground: 220 15% 18%;
-    --destructive: 0 72% 51%;
+    --card-foreground: 0 0% 7%;
+    --border: 0 0% 90%;
+    --input: 0 0% 90%;
+    --ring: 0 0% 7%;
+    --accent: 0 0% 7%;
+    --accent-foreground: 0 0% 100%;
+    --primary: 0 0% 7%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 10%;
+    --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
     --popover: 0 0% 100%;
-    --popover-foreground: 220 15% 12%;
-    --radius: 0.75rem;
-    --shell: 40 10% 97%;
-    --shell-elevated: 0 0% 100%;
+    --popover-foreground: 0 0% 7%;
+    --radius: 0.625rem;
+    --shell: 0 0% 100%;
+    --feed: 0 0% 100%;
+    --icon: 0 0% 40%;
+    --nav-inactive: 0 0% 30%;
+    --brand: 162 72% 42%;
   }
 
+  /*
+   * Threads dark tokens (sampled):
+   * page #0a0a0a | feed #181818 | text #f3f5f7 | muted #777777
+   * icons #cccccc | nav inactive #4d4d4d
+   */
   .dark {
-    --background: 220 12% 7%;
-    --foreground: 210 20% 96%;
-    --muted: 220 10% 14%;
-    --muted-foreground: 215 12% 62%;
-    --card: 220 12% 9%;
-    --card-foreground: 210 20% 96%;
-    --border: 220 10% 18%;
-    --input: 220 10% 18%;
-    --ring: 162 70% 48%;
-    --accent: 162 70% 48%;
-    --accent-foreground: 160 50% 8%;
-    --primary: 162 70% 48%;
-    --primary-foreground: 160 50% 8%;
-    --secondary: 220 10% 14%;
-    --secondary-foreground: 210 20% 92%;
-    --destructive: 0 70% 48%;
+    --background: 0 0% 3.9%;
+    --foreground: 210 17% 96%;
+    --muted: 0 0% 12%;
+    --muted-foreground: 0 0% 46.7%;
+    --card: 0 0% 9.4%;
+    --card-foreground: 210 17% 96%;
+    --border: 0 0% 16%;
+    --input: 0 0% 16%;
+    --ring: 0 0% 98%;
+    --accent: 0 0% 98%;
+    --accent-foreground: 0 0% 6%;
+    --primary: 0 0% 100%;
+    --primary-foreground: 0 0% 0%;
+    --secondary: 0 0% 12%;
+    --secondary-foreground: 0 0% 96%;
+    --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
-    --popover: 220 12% 10%;
-    --popover-foreground: 210 20% 96%;
-    --shell: 220 12% 7%;
-    --shell-elevated: 220 12% 9%;
+    --popover: 0 0% 9%;
+    --popover-foreground: 210 17% 96%;
+    --shell: 0 0% 3.9%;
+    --feed: 0 0% 9.4%;
+    --icon: 0 0% 80%;
+    --nav-inactive: 0 0% 30%;
+    --brand: 162 70% 48%;
   }
 
   html,
-  body {
+  body,
+  #__next {
     padding: 0;
     margin: 0;
+    width: 100%;
+    max-width: none;
+    min-height: 100%;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  html {
+    height: 100%;
   }
 
   body {
     @apply bg-background text-foreground antialiased;
+    min-height: 100dvh;
+    overflow-x: hidden;
+    font-family: system-ui, -apple-system, 'system-ui', Roboto, Helvetica, Arial,
+      sans-serif;
+    font-size: 15px;
+    line-height: 21px;
+  }
+
+  #__next {
+    min-height: 100dvh;
+  }
+
+  @supports (-webkit-touch-callout: none) {
+    input,
+    textarea,
+    select {
+      font-size: 16px;
+    }
+  }
+}
+
+@layer utilities {
+  /* Threads rail: fixed 76px, icon-only */
+  .threads-rail {
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 40;
+    display: none;
+    height: 100dvh;
+    width: 76px;
+    flex-direction: column;
+    align-items: center;
+    background: hsl(var(--background) / 0.85);
+  }
+
+  @media (min-width: 768px) {
+    .threads-rail {
+      display: flex;
+    }
+  }
+
+  /*
+   * Feed placement matches Threads:
+   * margin-left: max(92px, 50vw - 320px - 150px)
+   * → 640px column, biased 150px left of center, clears 76px rail
+   */
+  .threads-feed-offset {
+    width: 100%;
+    min-height: 100dvh;
+    padding-bottom: calc(4.5rem + env(safe-area-inset-bottom));
+    padding-top: 3.5rem;
+  }
+
+  @media (min-width: 768px) {
+    .threads-feed-offset {
+      padding-top: 0;
+      padding-bottom: 0;
+      padding-left: 0;
+    }
+  }
+
+  .threads-feed-column {
+    width: 100%;
+    max-width: 640px;
+    min-height: 100dvh;
+    margin-left: auto;
+    margin-right: auto;
+    background: hsl(var(--background));
+  }
+
+  @media (min-width: 768px) {
+    .threads-feed-column {
+      margin-left: max(92px, calc(50vw - 320px - 150px));
+      margin-right: auto;
+      background: hsl(var(--feed));
+      border-bottom-left-radius: 24px;
+      border-bottom-right-radius: 24px;
+    }
+  }
+
+  /* Action chips: 36px tall, 20px icons, 13px counts */
+  .threads-action {
+    display: inline-flex;
+    height: 36px;
+    align-items: center;
+    gap: 4px;
+    border-radius: 9999px;
+    padding: 0 12px;
+    font-size: 13px;
+    line-height: 21px;
+    color: hsl(var(--icon));
+    transition: background-color 0.15s ease, color 0.15s ease;
+  }
+
+  .threads-action:hover {
+    background: hsl(var(--muted));
+    color: hsl(var(--foreground));
+  }
+
+  .threads-nav-btn {
+    display: flex;
+    height: 60px;
+    width: 60px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 16px;
+    color: hsl(var(--nav-inactive));
+    transition: color 0.15s ease, background-color 0.15s ease;
+  }
+
+  .threads-nav-btn:hover {
+    color: hsl(var(--foreground));
+  }
+
+  .threads-nav-btn[data-active='true'] {
+    color: hsl(var(--foreground));
+  }
+
+  .threads-nav-create {
+    color: hsl(var(--muted-foreground));
+  }
+
+  .threads-nav-create-box {
+    display: flex;
+    height: 36px;
+    width: 36px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    background: hsl(0 0% 12%);
   }
 }
 

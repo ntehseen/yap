@@ -1,4 +1,4 @@
-import { Home, Compass, Search, PlusSquare, Heart, MessageCircle, User, MoreHorizontal, type LucideIcon } from 'lucide-react';
+import { Home, Search, PlusSquare, Heart, User, Menu, Compass, MessageCircle, type LucideIcon } from 'lucide-react';
 
 export type ShellPage =
   | 'Home'
@@ -18,24 +18,28 @@ export interface NavItem {
   action?: 'search' | 'create' | 'notifications' | 'more';
 }
 
+/** Threads-primary order: Home → Search → Create → Activity → Profile */
 export const primaryNavItems: NavItem[] = [
   { id: 'Home', label: 'Home', href: '/', icon: Home },
-  { id: 'Explore', label: 'Explore', href: '/Explore', icon: Compass },
   { id: 'Search', label: 'Search', icon: Search, action: 'search' },
   { id: 'Create', label: 'Create', icon: PlusSquare, action: 'create' },
   {
     id: 'Notifications',
-    label: 'Notifications',
+    label: 'Activity',
     icon: Heart,
     action: 'notifications',
   },
+];
+
+export const secondaryNavItems: NavItem[] = [
+  { id: 'Explore', label: 'Explore', href: '/Explore', icon: Compass },
   { id: 'Inbox', label: 'Messages', href: '/Inbox', icon: MessageCircle },
 ];
 
 export const moreNavItem: NavItem = {
   id: '',
   label: 'More',
-  icon: MoreHorizontal,
+  icon: Menu,
   action: 'more',
 };
 

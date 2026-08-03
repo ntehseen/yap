@@ -16,9 +16,12 @@ function FeedComposer() {
   const [selectedImage, setSelectedImage] = React.useState<File | undefined>();
   const [previewUrl, setPreviewUrl] = React.useState<string | null>(null);
   const [loading, setLoading] = React.useState(false);
+  const [focused, setFocused] = React.useState(false);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   const canPost = Boolean(caption.trim() || selectedImage) && !loading;
+  const showActions =
+    focused || Boolean(caption.trim()) || Boolean(selectedImage);
 
   React.useEffect(() => {
     if (!selectedImage) {
@@ -46,40 +49,43 @@ function FeedComposer() {
       onDone: () => {
         setCaption('');
         clearImage();
+        setFocused(false);
       },
     });
   }
 
   return (
-    <div className="border-b border-border px-4 py-4">
+    <div className="border-b border-white/[0.08] px-[25px] py-3">
       <div className="flex gap-3">
-        <div className="shrink-0">
+        <div className="shrink-0 self-start pt-0.5">
           {userDetails.photoURL ? (
             <Image
-              className="h-10 w-10 rounded-full object-cover"
+              className="h-9 w-9 rounded-full object-cover"
               src={userDetails.photoURL}
               alt=""
-              width={40}
-              height={40}
+              width={36}
+              height={36}
+              priority
             />
           ) : (
-            <div className="h-10 w-10">
+            <div className="h-9 w-9">
               <ProfilePicSVG strokeWidth="1.5" />
             </div>
           )}
         </div>
         <div className="min-w-0 flex-1">
           <TextareaAutosize
-            className="w-full resize-none bg-transparent text-base text-foreground placeholder:text-muted-foreground focus:outline-none"
-            placeholder="Start yapping..."
+            className="w-full resize-none bg-transparent py-1.5 text-[15px] leading-[21px] text-foreground placeholder:text-muted-foreground focus:outline-none"
+            placeholder="What's new?"
             value={caption}
             onChange={(e) => setCaption(e.target.value)}
-            minRows={2}
+            onFocus={() => setFocused(true)}
+            minRows={1}
             maxRows={8}
             disabled={loading}
           />
           {previewUrl ? (
-            <div className="relative mt-3 overflow-hidden rounded-2xl border border-border">
+            <div className="relative mt-2 overflow-hidden rounded-[12px]">
               <img
                 src={previewUrl}
                 alt="Upload preview"
@@ -95,46 +101,47 @@ function FeedComposer() {
               </button>
             </div>
           ) : null}
-          <div className="mt-3 flex items-center justify-between">
-            <div>
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept=".png,.jpg,.jpeg,image/png,image/jpeg"
-                className="hidden"
-                onChange={(e) => {
-                  const file = e.target.files?.[0];
-                  if (!file) return;
-                  if (
-                    file.type === 'image/png' ||
-                    file.type === 'image/jpeg' ||
-                    file.type === 'image/jpg'
-                  ) {
-                    setSelectedImage(file);
-                  }
-                }}
-              />
+          {showActions ? (
+            <div className="mt-2 flex items-center justify-between border-t border-white/[0.08] pt-2">
+              <div>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept=".png,.jpg,.jpeg,image/png,image/jpeg"
+                  className="hidden"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    if (
+                      file.type === 'image/png' ||
+                      file.type === 'image/jpeg' ||
+                      file.type === 'image/jpg'
+                    ) {
+                      setSelectedImage(file);
+                    }
+                  }}
+                />
+                <button
+                  type="button"
+                  className="flex h-9 w-9 items-center justify-center rounded-full text-foreground hover:bg-muted"
+                  aria-label="Add image"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={loading}
+                >
+                  <ImagePlus className="h-5 w-5" strokeWidth={1.75} />
+                </button>
+              </div>
               <Button
                 type="button"
-                variant="ghost"
-                size="icon"
-                className="text-accent"
-                aria-label="Add image"
-                onClick={() => fileInputRef.current?.click()}
-                disabled={loading}
+                size="sm"
+                className="min-w-[64px]"
+                disabled={!canPost}
+                onClick={onPublish}
               >
-                <ImagePlus className="h-5 w-5" />
+                {loading ? 'Posting…' : 'Post'}
               </Button>
             </div>
-            <Button
-              type="button"
-              size="sm"
-              disabled={!canPost}
-              onClick={onPublish}
-            >
-              {loading ? 'Posting…' : 'Yap'}
-            </Button>
-          </div>
+          ) : null}
         </div>
       </div>
     </div>

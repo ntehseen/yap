@@ -51,12 +51,12 @@ function useCheckUserName({
     setCheckingUser(false);
   }
 
-  async function queryNameCharacter() {
+  async function queryNameCharacter(searchTerm: string) {
     const Ref = collection(db, 'users');
     const queryArray: notificationTypes[] = [];
 
     // Create a query against the collection.
-    const q = query(Ref, where('usernameQuery', 'array-contains', nameSearch));
+    const q = query(Ref, where('usernameQuery', 'array-contains', searchTerm));
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
       // if user/document exists
@@ -96,7 +96,12 @@ function useCheckUserName({
     }
 
     if (queryCharacter && nameSearch !== '') {
-      queryNameCharacter();
+      // usernameQuery prefixes are stored lowercase
+      const needle =
+        typeof nameSearch === 'string'
+          ? nameSearch.toLowerCase()
+          : String(nameSearch).toLowerCase();
+      queryNameCharacter(needle);
       setCheckingUser(true);
     }
   }, [nameSearch, userDetails, userStatus]);

@@ -34,8 +34,9 @@ function AddStory() {
                 className="relative z-10 h-14 w-14 select-none rounded-full bg-[#ebebeb] object-cover p-[2px] dark:bg-[#1c1c1c]"
                 src={userDetails.photoURL}
                 alt="avatar"
-                width="56"
-                height="56"
+                width={56}
+                height={56}
+                priority
               />
             ) : (
               <div className="relative z-10 h-14 w-14 rounded-full bg-white dark:bg-[#1c1c1c]">

@@ -1,14 +1,19 @@
 function LoadingPosts() {
   return (
-    <div className="mt-6 w-full max-w-[470px]  rounded-lg border border-stone-300 bg-white dark:border-stone-700 dark:bg-[#1c1c1c]">
-      <div className="flex h-14 items-center">
-        <div className="ml-5 h-8 w-8 animate-pulse rounded-full bg-[#ebebeb] dark:bg-[#313131]" />
-        <div className="ml-5 h-5 w-[200px] animate-pulse rounded-sm bg-[#ebebeb] dark:bg-[#313131]" />
-      </div>
-      <div className="h-[300px] animate-pulse bg-[#ebebeb] dark:bg-[#313131]" />
-      <div className="flex h-14 items-center">
-        <div className="ml-5 h-5 w-[200px] animate-pulse rounded-sm bg-[#ebebeb] dark:bg-[#313131]" />
-      </div>
+    <div className="w-full space-y-0">
+      {[0, 1, 2].map((key) => (
+        <div key={key} className="border-b border-border px-4 py-4">
+          <div className="flex gap-3">
+            <div className="h-10 w-10 shrink-0 animate-pulse rounded-full bg-muted" />
+            <div className="min-w-0 flex-1 space-y-3">
+              <div className="h-4 w-40 animate-pulse rounded bg-muted" />
+              <div className="h-4 w-full animate-pulse rounded bg-muted" />
+              <div className="h-4 w-3/4 animate-pulse rounded bg-muted" />
+              <div className="h-48 w-full animate-pulse rounded-2xl bg-muted" />
+            </div>
+          </div>
+        </div>
+      ))}
     </div>
   );
 }
