@@ -1,8 +1,8 @@
-/* eslint-disable react/no-array-index-key */
-/* eslint-disable no-use-before-define */
-/* eslint-disable react-hooks/exhaustive-deps */
+ 
+ 
+ 
 import React from 'react';
-import Image from 'next/future/image';
+import Image from 'next/image';
 import Link from 'next/link';
 import TextareaAutosize from 'react-textarea-autosize';
 import { useAtom } from 'jotai';
@@ -57,7 +57,6 @@ function ChatRoom({ chatRoomID, userID, activeChat, activeChatId }: Props) {
           </div>
         ) : (
           <Link href={`/${chatName}`}>
-            <a>
               <Image
                 className="h-7 w-7 cursor-pointer select-none rounded-full object-cover"
                 src={avatarURL}
@@ -65,14 +64,11 @@ function ChatRoom({ chatRoomID, userID, activeChat, activeChatId }: Props) {
                 width="28"
                 height="28"
               />
-            </a>
-          </Link>
+            </Link>
         )}
         <Link href={`/${chatName}`}>
-          <a>
             <h1 className="cursor-pointer">{chatName}</h1>
-          </a>
-        </Link>
+          </Link>
       </div>
       <div
         className={`${
@@ -228,7 +224,6 @@ function ChatIcon({
         </div>
       ) : (
         <Link href={`/${chatName}`}>
-          <a>
             <Image
               className="h-6 w-6 cursor-pointer select-none rounded-full object-cover"
               src={photoURL}
@@ -236,8 +231,7 @@ function ChatIcon({
               height="24"
               width="24"
             />
-          </a>
-        </Link>
+          </Link>
       )}
     </div>
   );

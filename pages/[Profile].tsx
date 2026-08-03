@@ -1,11 +1,10 @@
 import Head from 'next/head';
 import React from 'react';
-import Image from 'next/future/image';
+import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useAtom } from 'jotai';
 import Link from 'next/link';
 import type { NextPage } from 'next';
-import Header from '../components/header/Header';
 import UnfollowUser from '../components/profilePages/UnfollowUser';
 import AddProfilePhoto from '../components/profilePages/AddProfilePhoto';
 import handleFollowUser from '../util/handleFollowUser';
@@ -22,6 +21,7 @@ import LoadingUserPosts from '../components/loadingComps/LoadingUserPosts';
 import useHandleFollowerFollowingDropDown from '../hooks/useHandleFollowerFollowingDropDown';
 import FollowerFollowingDisplay from '../components/profilePages/FollowerFollowingDisplay';
 import UserDoesNotExist from '../components/profilePages/UserDoesNotExist';
+import AppShell from '../components/layout/AppShell';
 
 const Profile: NextPage = () => {
   const router = useRouter();
@@ -76,15 +76,16 @@ const Profile: NextPage = () => {
 
   // If a user exists render profile page
   return (
-    <div className="h-[100vh] overflow-y-scroll bg-[#fafafa] text-[#231f20] dark:bg-[#131313] dark:text-slate-100 dark:[color-scheme:dark]">
+    <AppShell page="Profile" title="Profile">
       <Head>
-        <title>Profile • Instagram photos and videos</title>
-        <meta name="description" content="Instagram Clone" />
+        <title>
+          {typeof nameSearch === 'string' ? nameSearch : 'Profile'} • Yap
+        </title>
+        <meta name="description" content="Yapper profile on Yap." />
         <link rel="icon" href="/instagram.png" />
       </Head>
-      <Header page="Profile" />
       {addPhoto ? <AddProfilePhoto setAddPhoto={setAddPhoto} /> : <div />}
-      <div className="mx-auto  max-w-[935px] pt-6 sm:pt-8">
+      <div className="mx-auto max-w-[935px] px-2 pt-6 sm:pt-8">
         <div className="flex items-stretch border-b border-stone-300 pb-7 dark:border-stone-700 sm:pb-11">
           <button
             className="relative mr-7 min-w-[80px] sm:mr-10 sm:grow-[1]"
@@ -126,12 +127,10 @@ const Profile: NextPage = () => {
               ) : (
                 <div className="flex flex-row items-center pb-2 sm:pl-7 sm:pb-0">
                   <Link href="/Inbox">
-                    <a>
                       <p className="mr-2  rounded-[4px] border border-stone-300 py-1 px-2 text-sm font-semibold dark:border-stone-700">
                         Message
                       </p>
-                    </a>
-                  </Link>
+                    </Link>
                   <div className=" overflow-hidden rounded-[4px] text-sm font-semibold">
                     {userNotifications.following?.includes(
                       profileNotifications.username!
@@ -219,7 +218,7 @@ const Profile: NextPage = () => {
             {profilePosts.slice(0, -1).map((postInformation, index) => (
               <UserPost
                 // Currently userposts are not reordered or deleted
-                // eslint-disable-next-line react/no-array-index-key
+                 
                 key={`post${index}`}
                 postInformation={postInformation}
                 postUserDetails={profileNotifications}
@@ -229,7 +228,7 @@ const Profile: NextPage = () => {
           {userPorfileLoading ? <LoadingUserPosts /> : ''}
         </div>
       </div>
-    </div>
+    </AppShell>
   );
 };
 

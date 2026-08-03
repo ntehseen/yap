@@ -8,7 +8,7 @@ import useSetFormErrors from '../hooks/useSetFormErrors';
 import atoms from '../util/atoms';
 import useHandleSignIn from '../hooks/useHandleSignIn';
 import handleSignIn from '../util/handleSignIn';
-import InstagramSVG from '../components/svgComps/InstagramSVG';
+import YappersLogo from '../components/brand/YappersLogo';
 
 const Login: NextPage = () => {
   const [listeners] = useAtom(atoms.listeners);
@@ -32,22 +32,25 @@ const Login: NextPage = () => {
   return (
     <div>
       <Head>
-        <title>Instagram • Login</title>
-        <meta name="description" content="Instagram Clone" />
+        <title>Log in • Yap</title>
+        <meta
+          name="description"
+          content="Log in to Yap — where the X-Clash community comes to yap."
+        />
         <link rel="icon" href="/instagram.png" />
       </Head>
-      <div className="flex min-h-[100vh] w-full items-center justify-center bg-[#fafafa]">
+      <div className="flex min-h-[100vh] w-full items-center justify-center bg-background">
         <div>
           <div className="relative hidden h-[590px] overflow-hidden lg:block">
             <Image
               priority
               src="/loginFrame.png"
-              alt="instagram"
+              alt="Yap"
               height={635}
               width={465}
             />
             <picture>
-              <img src="/loginFrame.png" alt="instagram" />
+              <img src="/loginFrame.png" alt="" />
             </picture>
             <div className="absolute top-[26px] right-14 h-full w-full">
               <div className="relative ">
@@ -55,34 +58,38 @@ const Login: NextPage = () => {
                   <Image
                     priority
                     src="/loginImg1.png"
-                    alt="instagram"
-                    layout="fill"
-                    objectFit="contain"
+                    alt=""
+                    fill
+                    className="object-contain"
+                    sizes="250px"
                   />
                 </div>
                 <div className="absolute top-0 right-0 h-[541px] w-[250px] animate-loginImage2 opacity-0">
                   <Image
                     src="/loginImg2.png"
-                    alt="instagram"
-                    layout="fill"
-                    objectFit="contain"
+                    alt=""
+                    fill
+                    className="object-contain"
+                    sizes="250px"
                   />
                 </div>
                 <div className="absolute top-0 right-0 h-[541px] w-[250px] animate-loginImage3 opacity-0">
                   <Image
                     src="/loginImg3.png"
-                    alt="instagram"
-                    layout="fill"
-                    objectFit="contain"
+                    alt=""
+                    fill
+                    className="object-contain"
+                    sizes="250px"
                   />
                 </div>
 
                 <div className="absolute top-0 right-0 h-[541px] w-[250px] animate-loginImage4 opacity-0">
                   <Image
                     src="/loginImg4.png"
-                    alt="instagram"
-                    layout="fill"
-                    objectFit="contain"
+                    alt=""
+                    fill
+                    className="object-contain"
+                    sizes="250px"
                   />
                 </div>
               </div>
@@ -90,9 +97,9 @@ const Login: NextPage = () => {
           </div>
         </div>
         <div>
-          <div className="flex max-w-[350px] flex-col items-center justify-center border border-stone-300 bg-white">
-            <div className="h-auto w-[175px] py-10">
-              <InstagramSVG disableDarkMode white={false} />
+          <div className="flex max-w-[350px] flex-col items-center justify-center border border-border bg-card">
+            <div className="flex h-auto w-full justify-center py-10">
+              <YappersLogo href="/Login" />
             </div>
             <div className="w-full px-5 sm:px-10">
               <form
@@ -143,22 +150,22 @@ const Login: NextPage = () => {
                 <button
                   className={`${
                     emailFormErrors === '' && passwordFormErrors === ''
-                      ? 'bg-[#0095f6]'
-                      : 'pointer-events-none cursor-default bg-[#abddff]'
-                  } my-5 w-full rounded-[4px]  px-2 py-1 text-sm font-semibold text-white`}
+                      ? 'bg-primary text-primary-foreground'
+                      : 'pointer-events-none cursor-default bg-primary/40 text-primary-foreground'
+                  } my-5 w-full rounded-[4px]  px-2 py-1 text-sm font-semibold`}
                   type="submit"
                 >
                   Log In
                 </button>
                 <div className="mb-5 flex h-0 items-center justify-center">
-                  <div className="w-full border-b border-stone-300" />
-                  <p className="mx-2 text-sm font-semibold text-[#6d6d6d]">
+                  <div className="w-full border-b border-border" />
+                  <p className="mx-2 text-sm font-semibold text-muted-foreground">
                     OR
                   </p>
-                  <div className="w-full border-b border-stone-300" />
+                  <div className="w-full border-b border-border" />
                 </div>
                 <button
-                  className="mb-10 w-full rounded-[4px] bg-[#0095f6] px-2 py-1 text-sm font-semibold text-white"
+                  className="mb-10 w-full rounded-[4px] bg-primary px-2 py-1 text-sm font-semibold text-primary-foreground"
                   type="button"
                   onClick={(e: any) =>
                     handleSignIn({
@@ -179,10 +186,10 @@ const Login: NextPage = () => {
               </form>
             </div>
           </div>
-          <div className="mt-2 flex max-w-[350px] justify-center border border-stone-300 bg-white py-5 text-[14px]">
+          <div className="mt-2 flex max-w-[350px] justify-center border border-border bg-card py-5 text-[14px]">
             <p>Do not have an account?</p>
             <button
-              className="ml-1 font-semibold text-[#0095f6]"
+              className="ml-1 font-semibold text-primary"
               type="button"
               onClick={() => Router.push('/SignUp')}
             >

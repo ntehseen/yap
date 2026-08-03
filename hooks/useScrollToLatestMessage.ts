@@ -3,7 +3,7 @@ import { postCommentTypes } from '../util/atoms';
 
 interface Props {
   messages: postCommentTypes[] | null;
-  latestMessageRef: React.RefObject<HTMLDivElement>;
+  latestMessageRef: React.RefObject<HTMLDivElement | null>;
 }
 
 export default function useScrollToLatestMessage({

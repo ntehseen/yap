@@ -1,5 +1,5 @@
 import React from 'react';
-import Image from 'next/future/image';
+import Image from 'next/image';
 import { useAtom } from 'jotai';
 import atoms from '../../util/atoms';
 import useCheckNameLength from '../../hooks/useCheckNameLength';

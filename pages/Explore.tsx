@@ -1,15 +1,15 @@
 import { useAtom } from 'jotai';
 import { NextPage } from 'next';
-import Image from 'next/future/image';
+import Image from 'next/image';
 import React from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import LoadingPage from '../components/loadingComps/LoadingPage';
 import atoms from '../util/atoms';
 import useExploreUsers from '../hooks/useExploreUsers';
-import Header from '../components/header/Header';
 import ProfilePicSVG from '../components/svgComps/ProfilePicSVG';
 import ArrowSVG from '../components/svgComps/ArrowSVG';
+import AppShell from '../components/layout/AppShell';
 
 const Explore: NextPage = () => {
   const [userStatus] = useAtom(atoms.userStatus);
@@ -28,19 +28,18 @@ const Explore: NextPage = () => {
   }
 
   return (
-    <div
-      className="h-screen overflow-y-scroll bg-[#fafafa] text-[#231f20] dark:bg-[#131313]
-    dark:text-slate-100 dark:[color-scheme:dark]"
-    >
+    <AppShell page="Explore" title="Explore">
       <Head>
-        <title>Instagram • Explore</title>
-        <meta name="description" content="Instagram Clone" />
+        <title>Explore • Yap</title>
+        <meta
+          name="description"
+          content="Explore players on Yap — the X-Clash community."
+        />
         <link rel="icon" href="/instagram.png" />
       </Head>
-      <Header page="" />
-      <div className="mx-auto my-16 w-full max-w-[600px] bg-white dark:bg-[#1c1c1c]">
-        <p className="bg-[#fafafa] pb-2 pl-5 font-semibold dark:bg-[#131313]">
-          Explore Users
+      <div className="mx-auto my-4 w-full border-y border-border bg-card sm:my-6 sm:rounded-lg sm:border">
+        <p className="border-b border-border bg-background px-5 py-3 font-semibold">
+          Explore users
         </p>
         {userExploreArray.usersArray.map((userDocs) => (
           <div
@@ -49,13 +48,12 @@ const Explore: NextPage = () => {
           >
             <div className="flex items-center gap-3">
               <Link href={userDocs.username!}>
-                <a>
                   {userDocs.avatarURL ? (
                     <div>
                       <Image
-                        className="h-11 w-11 cursor-pointer select-none rounded-full bg-[#ebebeb] object-cover dark:bg-[#313131]"
+                        className="h-11 w-11 cursor-pointer select-none rounded-full bg-muted object-cover"
                         src={userDocs.avatarURL}
-                        alt="avatar"
+                        alt=""
                         width="44"
                         height="44"
                       />
@@ -65,40 +63,35 @@ const Explore: NextPage = () => {
                       <ProfilePicSVG strokeWidth="1" />
                     </div>
                   )}
-                </a>
-              </Link>
+                </Link>
               <div>
                 <Link href={userDocs.username!}>
-                  <a>
                     <p className="cursor-pointer text-sm font-semibold">
                       {userDocs.username}
                     </p>
-                  </a>
-                </Link>
-                <p className="hidden text-xs text-[#818181] sm:block">
+                  </Link>
+                <p className="hidden text-xs text-muted-foreground sm:block">
                   Followed by {userDocs.followers!.length}{' '}
                   {userDocs.followers!.length === 1 ? 'user' : 'users'}{' '}
                   {userDocs.followers!.includes(userDetails.displayName!)
                     ? 'including you'
                     : ''}
                 </p>
-                <p className="text-xs text-[#818181] sm:hidden">
+                <p className="text-xs text-muted-foreground sm:hidden">
                   Followed by {userDocs.followers!.length}
                 </p>
               </div>
             </div>
             <Link href={userDocs.username!}>
-              <a>
-                <p className="cursor-pointer pr-5 text-xs font-semibold text-[#0095f6]">
+                <p className="cursor-pointer pr-5 text-xs font-semibold text-primary">
                   Profile
                 </p>
-              </a>
-            </Link>
+              </Link>
           </div>
         ))}
         {!userExploreArray.moreUsers ? (
           <div className="flex justify-center pt-4">
-            <p className="text-[#ff2b2b]">No more users were found</p>
+            <p className="text-destructive">No more users were found</p>
           </div>
         ) : (
           ''
@@ -110,7 +103,7 @@ const Explore: NextPage = () => {
             type="button"
             onClick={() => setRequestMoreUsers(!requestMoreUsers)}
           >
-            <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#0095f6]   group-hover:animate-bounce">
+            <div className="flex h-7 w-7 items-center justify-center rounded-full bg-primary group-hover:animate-bounce">
               <div className="h-5 w-5 pt-[1px]">
                 <div className="h-5 w-5 rotate-90 ">
                   <ArrowSVG white />
@@ -120,7 +113,7 @@ const Explore: NextPage = () => {
           </button>
         </div>
       </div>
-    </div>
+    </AppShell>
   );
 };
 

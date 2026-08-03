@@ -69,7 +69,7 @@ async function handleSubmitToDB({
 
   // add to post count
   updateDoc(userRef, {
-    // eslint-disable-next-line no-unsafe-optional-chaining
+     
     postCount: userNotifications.postCount! + 1,
   });
 

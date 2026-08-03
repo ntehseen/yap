@@ -1,6 +1,6 @@
-/* eslint-disable jsx-a11y/click-events-have-key-events */
+ 
 import React from 'react';
-import Image from 'next/future/image';
+import Image from 'next/image';
 import { useAtom } from 'jotai';
 import Link from 'next/link';
 import PostPopUp from '../PostPopUp';
@@ -49,7 +49,6 @@ const HomePagePost = ({ username, index }: Props) => {
           )}
           <div className="ml-3 flex items-center py-3">
             <Link href={username}>
-              <a>
                 {postDetails.comments[0].avatarURL ? (
                   <Image
                     className="h-8 w-8 cursor-pointer select-none rounded-full object-cover"
@@ -63,15 +62,12 @@ const HomePagePost = ({ username, index }: Props) => {
                     <ProfilePicSVG strokeWidth="1" />
                   </div>
                 )}
-              </a>
-            </Link>
+              </Link>
             <Link href={username}>
-              <a>
                 <p className="ml-4 cursor-pointer">
                   {postDetails.comments[0].username}
                 </p>
-              </a>
-            </Link>
+              </Link>
           </div>
           <div
             role="button"
@@ -170,9 +166,7 @@ const HomePagePost = ({ username, index }: Props) => {
                   Liked by{' '}
                   <b>
                     {postDetails.likes.length > 0 ? (
-                      <Link href={postDetails.likes[0]}>
-                        <a>{postDetails.likes[0]}</a>
-                      </Link>
+                      <Link href={postDetails.likes[0]}>{postDetails.likes[0]}</Link>
                     ) : (
                       ''
                     )}

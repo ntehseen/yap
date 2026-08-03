@@ -1,14 +1,20 @@
-import { initializeApp } from 'firebase/app';
+import { initializeApp, getApps, FirebaseApp } from 'firebase/app';
 
+// Demo fallbacks keep `next build` / SSG from crashing when .env.local is unset.
+// Replace via NEXT_PUBLIC_FIREBASE_* in .env.local for a real project.
 const firebaseConfig = {
-  apiKey: 'place your FIREBASE config here',
-  authDomain: 'place your FIREBASE config here',
-  projectId: 'place your FIREBASE config here',
-  storageBucket: 'place your FIREBASE config here',
-  messagingSenderId: 'place your FIREBASE config here',
-  appId: 'place your FIREBASE config here',
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY || 'demo-api-key',
+  authDomain:
+    process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN || 'demo.firebaseapp.com',
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || 'demo',
+  storageBucket:
+    process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET || 'demo.appspot.com',
+  messagingSenderId:
+    process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID || '0',
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID || '1:0:web:demo',
 };
 
-const app = initializeApp(firebaseConfig);
+const app: FirebaseApp =
+  getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
 
 export default app;

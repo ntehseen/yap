@@ -1,5 +1,5 @@
-/* eslint-disable jsx-a11y/click-events-have-key-events */
-/* eslint-disable react/no-array-index-key */
+ 
+ 
 import Head from 'next/head';
 import React from 'react';
 import { useAtom } from 'jotai';
@@ -9,10 +9,10 @@ import CreateChatRoom from '../components/InboxPage/CreateChatRoom';
 import SendMessage from '../components/InboxPage/SendMessage';
 import LoadingPage from '../components/loadingComps/LoadingPage';
 import NewMessageSVG from '../components/svgComps/NewMessageSVG';
-import Header from '../components/header/Header';
 import atoms from '../util/atoms';
 import LoadingChatRooms from '../components/loadingComps/LoadingChatRooms';
 import handleResetNewMessage from '../util/handleResetNewMessage';
+import AppShell from '../components/layout/AppShell';
 
 const Inbox: NextPage = () => {
   const [userStatus] = useAtom(atoms.userStatus);
@@ -28,24 +28,24 @@ const Inbox: NextPage = () => {
   }
 
   return (
-    <div className="h-screen cursor-default overflow-y-scroll bg-[#fafafa] text-[#231f20] dark:bg-[#131313] dark:text-slate-100 dark:[color-scheme:dark]">
+    <AppShell page="Inbox" title="Messages">
       <Head>
-        <title>Instagram • Chats</title>
-        <meta name="description" content="Instagram Clone" />
+        <title>Messages • Yap</title>
+        <meta name="description" content="Chat with Yappers on Yap." />
         <link rel="icon" href="/instagram.png" />
       </Head>
-      <Header page="Inbox" />
       {createChatRoom ? (
         <CreateChatRoom setCreateChatRoom={setCreateChatRoom} />
       ) : (
         <div />
       )}
-      <div className="relative mx-auto mt-4 h-[calc(100%-140px)] max-w-[935px] border border-stone-300 bg-white dark:border-stone-700 dark:bg-[#1c1c1c] sm:h-[calc(100%-90px)]">
-        <div className="flex h-[60px] w-[130px] items-center border-b border-stone-300 dark:border-stone-700 md:w-[350px] md:px-5">
+      <div className="relative mx-auto mt-2 h-[calc(100vh-8rem)] w-full max-w-[935px] border border-border bg-card sm:mt-4 xl:h-[calc(100vh-2rem)]">
+        <div className="flex h-[60px] w-[130px] items-center border-b border-border md:w-[350px] md:px-5">
           <h1 className="mx-auto">{userDetails.displayName}</h1>
           <button
             onClick={() => setCreateChatRoom(!createChatRoom)}
             type="button"
+            aria-label="New message"
           >
             <NewMessageSVG />
           </button>
@@ -89,7 +89,7 @@ const Inbox: NextPage = () => {
           )}
         </div>
       </div>
-    </div>
+    </AppShell>
   );
 };
 

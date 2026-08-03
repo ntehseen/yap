@@ -1,4 +1,4 @@
-/* eslint-disable no-nested-ternary */
+ 
 import { useAtom } from 'jotai';
 import atoms from '../../util/atoms';
 

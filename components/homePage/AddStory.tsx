@@ -1,6 +1,6 @@
 import { useAtom } from 'jotai';
 import React from 'react';
-import Image from 'next/future/image';
+import Image from 'next/image';
 import AddStorySVG from '../svgComps/AddStorySVG';
 import handleUpdateUserStory from '../../util/handleUpdateUserStory';
 import handleUploadImage from '../../util/handleUploadImage';

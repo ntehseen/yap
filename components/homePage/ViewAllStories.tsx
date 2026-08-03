@@ -1,12 +1,11 @@
 import React from 'react';
 import { useAtom } from 'jotai';
 import Link from 'next/link';
-import Image from 'next/future/image';
+import Image from 'next/image';
 import CloseBtnSVG from '../svgComps/CloseBtnSVG';
 import ArrowSVG from '../svgComps/ArrowSVG';
 import atoms from '../../util/atoms';
 import ProgressBar from './ProgressBar';
-import InstagramSVG from '../svgComps/InstagramSVG';
 import ProfilePicSVG from '../svgComps/ProfilePicSVG';
 import handleSwipeEvents from '../../util/handleSwipeEvents';
 
@@ -53,7 +52,9 @@ function ViewAllStories({
         }}
       >
         <div className="h-auto w-[103px]">
-          <InstagramSVG disableDarkMode white />
+          <span className="text-2xl font-semibold tracking-tight text-white">
+            Yap
+          </span>
         </div>
       </button>
       <button
@@ -110,7 +111,6 @@ function ViewAllStories({
                     />
                     <div className="absolute top-9 left-0 z-[1000] ml-5 flex items-center gap-2 text-sm text-white">
                       <Link href={userName}>
-                        <a>
                           {stories[`${userName}Photo`].length === 0 ? (
                             <div className="h-8 w-8">
                               <ProfilePicSVG strokeWidth="1" />
@@ -124,13 +124,10 @@ function ViewAllStories({
                               width="32"
                             />
                           )}
-                        </a>
-                      </Link>
+                        </Link>
                       <Link href={userName}>
-                        <a>
                           <p className="cursor-pointer">{userName}</p>
-                        </a>
-                      </Link>
+                        </Link>
                     </div>
                   </div>
                 ) : (

@@ -3,7 +3,7 @@ import React from 'react';
 function useCheckNameLength({
   widthRef,
 }: {
-  widthRef: React.RefObject<HTMLDivElement>;
+  widthRef: React.RefObject<HTMLDivElement | null>;
 }) {
   const [nameWidth, setNameWidth] = React.useState<null | number>(null);
 

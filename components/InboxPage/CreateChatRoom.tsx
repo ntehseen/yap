@@ -1,6 +1,6 @@
-/* eslint-disable no-unsafe-optional-chaining */
+ 
 import React from 'react';
-import Image from 'next/future/image';
+import Image from 'next/image';
 import { useAtom } from 'jotai';
 import SearchBtnSVG from '../svgComps/SearchBtnSVG';
 import CloseBtnSVG from '../svgComps/CloseBtnSVG';

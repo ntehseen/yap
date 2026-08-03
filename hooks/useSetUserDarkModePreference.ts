@@ -7,12 +7,17 @@ function useSetUserDarkModePreference() {
   const [, setDarkMode] = useAtom(atoms.darkMode);
 
   React.useEffect(() => {
-    const darkModeStatus = localStorage.getItem('darkModeInstagram');
+    const darkModeStatus =
+      localStorage.getItem('darkModeYap') ??
+      localStorage.getItem('darkModeInstagram');
 
     if (darkModeStatus === 'true') {
       setDarkMode(true);
-    } else {
+    } else if (darkModeStatus === 'false') {
       setDarkMode(false);
+    } else {
+      // Dark-first default for Yappers
+      setDarkMode(true);
     }
   }, []);
 }

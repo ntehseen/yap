@@ -1,5 +1,5 @@
 import { useAtom } from 'jotai';
-import Image from 'next/future/image';
+import Image from 'next/image';
 import Link from 'next/link';
 import atoms, { followingFollowerInfo } from '../../util/atoms';
 import DropDownArrowSVG from '../svgComps/DropDownArrowSVG';
@@ -61,7 +61,6 @@ export default function FollowingFollowerDropDown({
               {usersInfo.map((userDetails) => (
                 <div className="flex items-center" key={userDetails.username}>
                   <Link href={`/${userDetails.username}`}>
-                    <a>
                       {userDetails.avatarURL.length !== 0 ? (
                         <Image
                           className="h-11 w-11 cursor-pointer select-none rounded-full bg-[#ebebeb] object-cover dark:bg-[#313131]"
@@ -75,21 +74,16 @@ export default function FollowingFollowerDropDown({
                           <ProfilePicSVG strokeWidth="1.5" />
                         </div>
                       )}
-                    </a>
-                  </Link>
+                    </Link>
                   <Link href={`/${userDetails.username}`}>
-                    <a>
                       <p className="pl-3 text-sm ">{userDetails.username}</p>
-                    </a>
-                  </Link>
+                    </Link>
                   <div className="ml-auto">
                     <Link href={`/${userDetails.username}`}>
-                      <a>
                         <p className="cursor-pointer text-xs font-semibold text-[#0095f6]">
                           Profile
                         </p>
-                      </a>
-                    </Link>
+                      </Link>
                   </div>
                 </div>
               ))}

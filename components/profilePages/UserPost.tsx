@@ -1,6 +1,6 @@
-/* eslint-disable jsx-a11y/click-events-have-key-events */
+ 
 import React from 'react';
-import Image from 'next/future/image';
+import Image from 'next/image';
 import CommentSVG from '../svgComps/CommentSVG';
 import HeartSVG from '../svgComps/HeartSVG';
 import PostPopUp from '../PostPopUp';

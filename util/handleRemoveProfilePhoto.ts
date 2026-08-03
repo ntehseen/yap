@@ -50,7 +50,7 @@ async function handleRemoveProfilePhoto({
 
   // update auth user details to reflect changes
   await updateProfile(auth.currentUser!, {
-    // eslint-disable-next-line object-shorthand
+     
     photoURL: '',
   })
     .then(() => {

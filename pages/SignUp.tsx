@@ -7,7 +7,7 @@ import atoms from '../util/atoms';
 import useHandleSignIn from '../hooks/useHandleSignIn';
 import useSetFormErrors from '../hooks/useSetFormErrors';
 import handleCreateUser from '../util/handleCreateUser';
-import InstagramSVG from '../components/svgComps/InstagramSVG';
+import YappersLogo from '../components/brand/YappersLogo';
 
 const SignUp: NextPage = () => {
   const [email, setEmail] = React.useState('');
@@ -34,10 +34,8 @@ const SignUp: NextPage = () => {
 
   if (loading) {
     return (
-      <div className="flex h-[100vh] w-full items-center justify-center dark:bg-[#131313]">
-        <picture>
-          <img src="/instagramLoading.png" alt="loading" />
-        </picture>
+      <div className="flex h-[100vh] w-full items-center justify-center bg-background">
+        <YappersLogo />
       </div>
     );
   }
@@ -45,18 +43,21 @@ const SignUp: NextPage = () => {
   return (
     <div>
       <Head>
-        <title>Instagram • Sign up</title>
-        <meta name="description" content="Instagram Clone" />
+        <title>Sign up • Yap</title>
+        <meta
+          name="description"
+          content="Join Yap — where the X-Clash community comes to yap."
+        />
         <link rel="icon" href="/instagram.png" />
       </Head>
-      <div className="flex min-h-[100vh] w-full items-center justify-center bg-[#fafafa]">
+      <div className="flex min-h-[100vh] w-full items-center justify-center bg-background">
         <div>
-          <div className="flex max-w-[350px] flex-col items-center justify-center border border-stone-300 bg-white">
-            <div className="h-auto w-[175px] pt-10 pb-5">
-              <InstagramSVG disableDarkMode white={false} />
+          <div className="flex max-w-[350px] flex-col items-center justify-center border border-border bg-card">
+            <div className="flex h-auto w-full justify-center pt-10 pb-5">
+              <YappersLogo href="/SignUp" />
             </div>
-            <div className="px-10 pb-5 text-center font-semibold text-[#8e8e8e]">
-              <p>Sign up to see photos and videos from your friends.</p>
+            <div className="px-10 pb-5 text-center font-semibold text-muted-foreground">
+              <p>Sign up to yap with the X-Clash community.</p>
             </div>
             <div className="w-full px-10">
               <form
@@ -81,7 +82,7 @@ const SignUp: NextPage = () => {
                 <label htmlFor="signInPageUserName">
                   {' '}
                   <input
-                    className="w-full border border-stone-300 bg-[#fafafa] px-2 py-[7px] text-sm focus:outline-none"
+                    className="w-full border border-border bg-muted px-2 py-[7px] text-sm focus:outline-none"
                     type="text"
                     id="signInPageUserName"
                     value={username}
@@ -95,7 +96,7 @@ const SignUp: NextPage = () => {
                 <label htmlFor="signInPageEmail">
                   {' '}
                   <input
-                    className=" w-full border border-stone-300 bg-[#fafafa] px-2 py-[7px] text-sm focus:outline-none"
+                    className=" w-full border border-border bg-muted px-2 py-[7px] text-sm focus:outline-none"
                     type="email"
                     id="signInPageEmail"
                     value={email}
@@ -109,7 +110,7 @@ const SignUp: NextPage = () => {
                 <label htmlFor="signInPagePassword">
                   {' '}
                   <input
-                    className="w-full border border-stone-300 bg-[#fafafa] px-2 py-[7px] text-sm focus:outline-none"
+                    className="w-full border border-border bg-muted px-2 py-[7px] text-sm focus:outline-none"
                     type="password"
                     id="signInPagePassword"
                     value={password}
@@ -123,9 +124,9 @@ const SignUp: NextPage = () => {
                 <button
                   className={`${
                     emailFormErrors === '' && passwordFormErrors === ''
-                      ? 'bg-[#0095f6]'
-                      : 'pointer-events-none cursor-default bg-[#abddff]'
-                  } my-5 w-full rounded-[4px]  px-2 py-1 text-sm font-semibold text-white`}
+                      ? 'bg-primary text-primary-foreground'
+                      : 'pointer-events-none cursor-default bg-primary/40 text-primary-foreground'
+                  } my-5 w-full rounded-[4px]  px-2 py-1 text-sm font-semibold`}
                   type="submit"
                 >
                   Sign Up
@@ -133,10 +134,10 @@ const SignUp: NextPage = () => {
               </form>
             </div>
           </div>
-          <div className="mt-2 flex max-w-[350px] justify-center border border-stone-300 bg-white py-5 text-[14px]">
+          <div className="mt-2 flex max-w-[350px] justify-center border border-border bg-card py-5 text-[14px]">
             <p>Have an account?</p>
             <button
-              className="ml-1 font-semibold text-[#0095f6]"
+              className="ml-1 font-semibold text-primary"
               type="button"
               onClick={() => Router.push('/Login')}
             >

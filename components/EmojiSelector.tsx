@@ -1,6 +1,6 @@
-/* eslint-disable jsx-a11y/click-events-have-key-events */
-/* eslint-disable jsx-a11y/no-noninteractive-element-to-interactive-role */
-/* eslint-disable react/no-array-index-key */
+ 
+ 
+ 
 import React from 'react';
 import {
   mostPopularEmojis,

@@ -65,7 +65,7 @@ async function submitUser({
     });
 
     setDoc(doc(db, 'users', username), {
-      // eslint-disable-next-line object-shorthand
+       
       userId: userId,
       avatarURL: '',
       chatRoomIds: [],

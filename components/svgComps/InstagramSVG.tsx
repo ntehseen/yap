@@ -12,7 +12,7 @@ function InstagramSVG({
   return (
     <svg
       aria-label="Instagram"
-      // eslint-disable-next-line no-nested-ternary
+       
       color={`${disableDarkMode ? '#262626' : darkMode ? '' : '#262626'} ${
         white ? '#000 !important' : ''
       }`}

@@ -9,7 +9,7 @@ interface Props {
   profileNotifications: notificationTypes;
   setUnfollow: React.Dispatch<React.SetStateAction<boolean>>;
   followingArray: string[];
-  // eslint-disable-next-line no-unused-vars
+   
   setFollowingArray: (update: SetStateAction<string[]>) => void;
 }
 
