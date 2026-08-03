@@ -5,102 +5,85 @@ import Link from 'next/link';
 import atoms from '../../util/atoms';
 import LoadingHeartPosts from '../loadingComps/LoadingHeartPosts';
 import ProfilePicSVG from '../svgComps/ProfilePicSVG';
-import useScrollToLatestMessage from '../../hooks/useScrollToLatestMessage';
 
 export default function HeartNotificationsWindow() {
   const [userNotifications] = useAtom(atoms.userNotifications);
   const [userDetails] = useAtom(atoms.userDetails);
-  const [darkMode] = useAtom(atoms.darkMode);
-  const [loading, setLoading] = React.useState(true);
 
-  const upperRef = React.useRef<HTMLDivElement>(null);
+  const owner = userDetails.displayName;
+  const items = userNotifications.heartNotifications;
 
-  useScrollToLatestMessage({ messages: null, latestMessageRef: upperRef });
-
-  if (!userNotifications.heartNotifications) {
+  if (!items) {
     return <LoadingHeartPosts />;
   }
 
-  const owner = userDetails.displayName;
-
   return (
-    <div className="relative">
-      <div
-        id="close"
-        className="fixed top-0 left-0 h-screen w-screen cursor-default"
-      />
-      <div className="absolute top-2 right-[-80px] h-[280px] w-[270px] cursor-default text-foreground sm:right-[-12px] sm:w-[440px]">
-        <div className="ml-auto mr-[84px] flex h-4 w-4 items-center justify-center overflow-hidden sm:mr-4">
-          <div className="mt-5 h-4 w-4 rotate-45 bg-card dark:bg-[#131313]" />
-        </div>
-        <div className="rounded-md border border-border bg-card py-4 shadow-lg dark:bg-[#131313]">
-          <div className={loading ? 'opacity-0' : ''}>
-            <p className="pl-6 text-sm font-semibold">New notifications</p>
-            <div
-              className={`${
-                darkMode ? 'scrollbarDark' : 'scrollbarLight'
-              } scrollbar flex max-h-[300px] flex-col-reverse overflow-y-auto`}
-              onLoad={() => setLoading(false)}
-            >
-              {userNotifications.heartNotifications!.map((details, index) => {
-                const threadHref =
-                  owner && details.postId
-                    ? `/post/${owner}/${details.postId}`
-                    : details.username
-                      ? `/${details.username}`
-                      : '/';
+    <div className="w-[min(100vw-2rem,380px)] overflow-hidden rounded-2xl border border-border bg-popover text-popover-foreground shadow-xl">
+      <div className="border-b border-white/[0.08] px-4 py-3">
+        <p className="text-[15px] font-semibold">Activity</p>
+      </div>
+      <div className="scrollbarDark scrollbar max-h-[360px] overflow-y-auto">
+        {items.length === 0 ? (
+          <p className="px-4 py-10 text-center text-[13px] text-muted-foreground">
+            No activity yet.
+          </p>
+        ) : (
+          [...items].reverse().map((details, index) => {
+            const threadHref =
+              owner && details.postId
+                ? `/post/${owner}/${details.postId}`
+                : details.username
+                  ? `/${details.username}`
+                  : '/';
 
-                return (
-                  <div
-                    className="flex items-center gap-2 px-2 py-4 text-sm sm:px-6"
-                    key={`hearts${index}`}
-                  >
-                    <Link href={`/${details.username!}`}>
-                      {details.userPhoto ? (
-                        <Image
-                          className="mr-2 h-11 w-11 cursor-pointer select-none rounded-full object-cover"
-                          src={details.userPhoto}
-                          alt=""
-                          width="44"
-                          height="44"
-                        />
-                      ) : (
-                        <div className="mr-2 h-11 w-11">
-                          <ProfilePicSVG strokeWidth="1.5" />
-                        </div>
-                      )}
-                    </Link>
-                    <div className="flex min-w-0 flex-1 flex-col sm:flex-row sm:flex-wrap sm:items-baseline">
-                      <Link href={`/${details.username!}`}>
-                        <p className="font-semibold">{details.username}</p>
-                      </Link>
-                      <p className="text-xs text-muted-foreground sm:pl-1 sm:text-sm">
-                        {details.text}
-                      </p>
+            return (
+              <div
+                className="flex items-center gap-3 px-4 py-3 hover:bg-white/[0.03]"
+                key={`hearts${index}-${details.username}-${details.postId}`}
+              >
+                <Link href={`/${details.username!}`} className="shrink-0">
+                  {details.userPhoto ? (
+                    <Image
+                      className="h-10 w-10 rounded-full object-cover"
+                      src={details.userPhoto}
+                      alt=""
+                      width={40}
+                      height={40}
+                    />
+                  ) : (
+                    <div className="h-10 w-10">
+                      <ProfilePicSVG strokeWidth="1.5" />
                     </div>
-                    <Link href={threadHref} className="ml-auto shrink-0">
-                      {details.postURL ? (
-                        <Image
-                          className="h-10 w-10 select-none object-cover"
-                          src={details.postURL}
-                          alt="Open yap"
-                          width="80"
-                          height="80"
-                          priority
-                        />
-                      ) : (
-                        <span className="inline-flex h-10 w-10 items-center justify-center rounded-md bg-muted text-xs font-medium text-muted-foreground">
-                          Yap
-                        </span>
-                      )}
-                    </Link>
-                  </div>
-                );
-              })}
-              <div ref={upperRef} />
-            </div>
-          </div>
-        </div>
+                  )}
+                </Link>
+                <div className="min-w-0 flex-1 text-[13px] leading-[18px]">
+                  <Link
+                    href={`/${details.username!}`}
+                    className="font-semibold text-foreground hover:underline"
+                  >
+                    {details.username}
+                  </Link>{' '}
+                  <span className="text-muted-foreground">{details.text}</span>
+                </div>
+                <Link href={threadHref} className="shrink-0">
+                  {details.postURL ? (
+                    <Image
+                      className="h-10 w-10 rounded-md object-cover"
+                      src={details.postURL}
+                      alt=""
+                      width={40}
+                      height={40}
+                    />
+                  ) : (
+                    <span className="inline-flex h-10 w-10 items-center justify-center rounded-md bg-muted text-[11px] font-medium text-muted-foreground">
+                      Yap
+                    </span>
+                  )}
+                </Link>
+              </div>
+            );
+          })
+        )}
       </div>
     </div>
   );

@@ -2,7 +2,7 @@
 
 Maps features to important files at the Yap repo root. Update this file whenever features move or new Yappers modules appear.
 
-**Last updated:** 2026-08-03 (Phase 4 profiles & discovery)  
+**Last updated:** 2026-08-03 (Phase 5 messaging)  
 **Related chapter:** [`01-starter-codebase-audit.md`](./01-starter-codebase-audit.md)
 
 ---

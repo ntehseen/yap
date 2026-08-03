@@ -159,17 +159,8 @@ function AppShell({
 
       {showHeartNotifications ? (
         <div className="fixed inset-0 z-50 flex justify-center bg-black/50 pt-16 md:justify-start md:pl-[90px] md:pt-8">
-          <div className="relative">
+          <div className="relative px-4">
             <HeartNotificationsWindow />
-            <Button
-              type="button"
-              variant="secondary"
-              size="sm"
-              className="absolute -top-10 right-0"
-              onClick={() => setShowHeartNotifications(false)}
-            >
-              Close
-            </Button>
           </div>
           <button
             type="button"
@@ -207,8 +198,16 @@ function AppShell({
               Profile
             </Link>
             <Link
+              href="/Inbox"
+              className="block rounded-xl px-3 py-3 text-sm hover:bg-muted"
+              onClick={() => setAvatarDropDown(false)}
+            >
+              Messages
+            </Link>
+            <Link
               href="/Explore"
               className="block rounded-xl px-3 py-3 text-sm hover:bg-muted"
+              onClick={() => setAvatarDropDown(false)}
             >
               Explore players
             </Link>

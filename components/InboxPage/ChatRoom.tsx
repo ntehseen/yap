@@ -1,210 +1,239 @@
- 
- 
- 
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import TextareaAutosize from 'react-textarea-autosize';
 import { useAtom } from 'jotai';
+import { ArrowLeft, Smile } from 'lucide-react';
 import EmojiSelector from '../EmojiSelector';
 import ProfilePicSVG from '../svgComps/ProfilePicSVG';
 import atoms from '../../util/atoms';
 import useHandleEmojiPopUp from '../../hooks/useHandleEmojiPopUp';
 import sendChatRoomMessage from '../../util/handleSendChatRoomMessage';
+import { cn } from '@/lib/utils';
 
 interface Props {
   chatRoomID: string;
   userID: string;
   activeChat: string;
   activeChatId: string;
+  mode: 'list' | 'thread';
+  onBack?: () => void;
 }
 
-function ChatRoom({ chatRoomID, userID, activeChat, activeChatId }: Props) {
-  const [darkMode] = useAtom(atoms.darkMode);
+function ChatRoom({
+  chatRoomID,
+  userID,
+  activeChat,
+  activeChatId,
+  mode,
+  onBack,
+}: Props) {
   const [allChatRoomMessages] = useAtom(atoms.allChatRoomMessages);
 
   const [inputText, setInputText] = React.useState('');
   const [displayEmojiSelector, setDisplayEmojiSelector] = React.useState(false);
+  const messagesEndRef = React.useRef<HTMLDivElement>(null);
 
-  const messages = allChatRoomMessages[chatRoomID]?.slice(0, -1);
-  const chatName =
-    allChatRoomMessages[chatRoomID]?.slice(-1)[0][`${userID}ChatName`];
-  const avatarURL =
-    allChatRoomMessages[chatRoomID]?.slice(-1)[0][`${chatName}Avatar`];
-  const newMessage =
-    allChatRoomMessages[chatRoomID]?.slice(-1)[0][`${userID}NewMessage`];
+  const room = allChatRoomMessages[chatRoomID];
+  const messages = room?.slice(0, -1) || [];
+  const meta = room?.slice(-1)[0];
+  const chatName = meta?.[`${userID}ChatName`] as string | undefined;
+  const avatarURL = chatName
+    ? (meta?.[`${chatName}Avatar`] as string | undefined)
+    : undefined;
+  const newMessage = Boolean(meta?.[`${userID}NewMessage`]);
+  const isActive = activeChat === activeChatId;
+  const lastMessage = messages[0];
 
   useHandleEmojiPopUp({ setDisplayEmojiSelector });
 
-  return (
-    <div className="dark:text-slate-100">
-      <div
-        className={`${
-          activeChat === activeChatId ? 'flex' : 'hidden'
-        } absolute left-[130px] top-0 h-[60px] cursor-default items-center gap-2 border-l border-stone-300 pl-2 dark:border-stone-700 md:left-[350px] md:gap-4 md:pl-10`}
-      >
-        {avatarURL === '' || !avatarURL ? (
-          <div className="h-7 w-7">
-            <ProfilePicSVG strokeWidth="1.5" />
-            <picture>
-              <img
-                // unfortuanetly this image is needed to force map loading state to be triggered
-                className="h-0 w-0 opacity-0"
-                src="/instagramLoading.png"
-                alt="avatar"
-              />
-            </picture>
-          </div>
-        ) : (
-          <Link href={`/${chatName}`}>
-              <Image
-                className="h-7 w-7 cursor-pointer select-none rounded-full object-cover"
-                src={avatarURL}
-                alt="avatar"
-                width="28"
-                height="28"
-              />
-            </Link>
-        )}
-        <Link href={`/${chatName}`}>
-            <h1 className="cursor-pointer">{chatName}</h1>
-          </Link>
+  React.useEffect(() => {
+    if (mode === 'thread' && isActive) {
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages.length, mode, isActive]);
+
+  if (!chatName) {
+    return (
+      <div className="flex items-center gap-3 px-[25px] py-3">
+        <div className="h-11 w-11 animate-pulse rounded-full bg-muted" />
+        <div className="h-4 w-28 animate-pulse rounded bg-muted" />
       </div>
+    );
+  }
+
+  if (mode === 'list') {
+    return (
       <div
-        className={`${
-          activeChat === activeChatId
-            ? 'bg-[#efefef] dark:bg-[#070707]'
-            : 'hover:bg-[#f8f8f8] dark:hover:bg-[#131313]'
-        } md: flex w-full items-center px-1 py-2 md:px-5`}
+        className={cn(
+          'flex w-full items-center gap-3 px-[25px] py-3 transition-colors hover:bg-white/[0.03]',
+          isActive && 'bg-white/[0.04]'
+        )}
       >
-        <div className="mr-2 flex  items-center justify-center md:h-14 md:w-14">
-          {avatarURL === '' || !avatarURL ? (
-            <div className="h-6 w-6 rounded-full md:h-14 md:w-14">
-              <ProfilePicSVG strokeWidth="1" />
-            </div>
+        {avatarURL ? (
+          <Image
+            className="h-11 w-11 shrink-0 rounded-full object-cover"
+            src={avatarURL}
+            alt=""
+            width={44}
+            height={44}
+          />
+        ) : (
+          <div className="h-11 w-11 shrink-0">
+            <ProfilePicSVG strokeWidth="1" />
+          </div>
+        )}
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-2">
+            <p
+              className={cn(
+                'truncate text-[15px] leading-[21px] text-foreground',
+                newMessage ? 'font-semibold' : 'font-medium'
+              )}
+            >
+              {chatName}
+            </p>
+            {newMessage ? (
+              <span className="h-2 w-2 shrink-0 rounded-full bg-primary" />
+            ) : null}
+          </div>
+          {lastMessage?.text ? (
+            <p
+              className={cn(
+                'truncate text-[13px] leading-[18px] text-muted-foreground',
+                newMessage && 'font-medium text-foreground'
+              )}
+            >
+              {lastMessage.name === userID ? 'You: ' : ''}
+              {lastMessage.text}
+            </p>
           ) : (
-            <Image
-              className="h-6 w-6 select-none rounded-full bg-[#ebebeb] object-cover dark:bg-[#313131] md:h-14 md:w-14"
-              src={avatarURL}
-              alt="avatar"
-              width="56"
-              height="56"
-              priority
-            />
+            <p className="text-[13px] text-muted-foreground">No messages yet</p>
           )}
         </div>
-        <h1 className="text-xs md:text-base">{chatName}</h1>
-        {newMessage ? (
-          <div className="ml-auto h-2 w-2 rounded-full bg-[#0095f6]" />
-        ) : (
-          ''
-        )}
       </div>
-      {activeChat === activeChatId ? (
-        <div className="absolute bottom-0 top-[59px] left-[130px] flex w-[calc(100%-130px)] cursor-default flex-col justify-end border-l border-t  border-stone-300 dark:border-stone-700 md:left-[350px] md:w-[calc(100%-350px)]">
-          <div className="flex cursor-default flex-col-reverse gap-5 overflow-y-auto px-1 py-2 dark:[color-scheme:dark] md:px-5">
-            {messages.map((message, index) => (
-              <div
-                key={`key${index}`}
-                className={`${
-                  message.name === userID ? 'justify-end' : 'justify-start'
-                } flex`}
-              >
-                {message.name === userID ? (
-                  ''
-                ) : (
-                  <ChatIcon photoURL={avatarURL} chatName={chatName} />
-                )}
-                <p
-                  className={`${
-                    message.name === userID
-                      ? 'bg-[#efefef] dark:bg-[#070707]'
-                      : 'border border-stone-200 dark:border-stone-700'
-                  } max-w-[80%] rounded-[30px] p-2 text-xs  md:max-w-[50%] md:p-4 md:text-sm`}
-                >
-                  {message.text}
-                </p>
-              </div>
-            ))}
-          </div>
-          <div className="relative mx-1 mt-3 mb-5 flex justify-between rounded-full border border-stone-200 dark:border-stone-700 dark:bg-[#131313] md:mx-5">
-            <button
-              className="px-2 md:px-5"
-              type="button"
-              onClick={() => setDisplayEmojiSelector(!displayEmojiSelector)}
-            >
-              <div>
-                <svg
-                  id="emoji"
-                  aria-label="Emoji"
-                  fill={darkMode ? '#a9a9a9' : '#262626'}
-                  className="h-4 w-4 md:h-6 md:w-6"
-                  height="24"
-                  role="img"
-                  viewBox="0 0 24 24"
-                  width="24"
-                >
-                  <path
-                    id="emoji"
-                    d="M15.83 10.997a1.167 1.167 0 101.167 1.167 1.167 1.167 0 00-1.167-1.167zm-6.5 1.167a1.167 1.167 0 10-1.166 1.167 1.167 1.167 0 001.166-1.167zm5.163 3.24a3.406 3.406 0 01-4.982.007 1 1 0 10-1.557 1.256 5.397 5.397 0 008.09 0 1 1 0 00-1.55-1.263zM12 .503a11.5 11.5 0 1011.5 11.5A11.513 11.513 0 0012 .503zm0 21a9.5 9.5 0 119.5-9.5 9.51 9.51 0 01-9.5 9.5z"
-                  />
-                </svg>
-              </div>
-            </button>
-            <TextareaAutosize
-              className="my-3 w-[80%] resize-none text-sm focus:outline-none dark:bg-[#131313]"
-              value={inputText}
-              onChange={(e) => setInputText(e.target.value)}
-              placeholder="Message..."
-              maxRows={4}
-              minRows={1}
-              onKeyPress={(e: any) =>
-                sendChatRoomMessage({
-                  e,
-                  chatRoomID,
-                  inputText,
-                  userID,
-                  setInputText,
-                  username: chatName,
-                })
-              }
+    );
+  }
+
+  // Thread view
+  return (
+    <div className="flex h-full min-h-[calc(100dvh-3.5rem-60px)] flex-col md:min-h-[calc(100dvh-60px)]">
+      <div className="flex h-[60px] items-center gap-2 border-b border-white/[0.08] px-3">
+        <button
+          type="button"
+          className="rounded-full p-2 text-foreground hover:bg-muted md:hidden"
+          onClick={onBack}
+          aria-label="Back to messages"
+        >
+          <ArrowLeft className="h-5 w-5" strokeWidth={1.75} />
+        </button>
+        <Link href={`/${chatName}`} className="flex min-w-0 items-center gap-3">
+          {avatarURL ? (
+            <Image
+              className="h-9 w-9 rounded-full object-cover"
+              src={avatarURL}
+              alt=""
+              width={36}
+              height={36}
             />
-            <button
-              id="sendMessage"
-              className={`${
-                inputText === ''
-                  ? 'pointer-events-none text-[#9dd8ff]'
-                  : 'text-[#0095F6]'
-              } pr-2 text-xs font-semibold md:pl-2 md:pr-4 md:text-sm `}
-              type="button"
-              onClick={(e: any) =>
+          ) : (
+            <div className="h-9 w-9">
+              <ProfilePicSVG strokeWidth="1.5" />
+            </div>
+          )}
+          <span className="truncate text-[15px] font-semibold text-foreground hover:underline">
+            {chatName}
+          </span>
+        </Link>
+      </div>
+
+      <div className="flex min-h-0 flex-1 flex-col-reverse gap-3 overflow-y-auto px-[25px] py-4">
+        <div ref={messagesEndRef} />
+        {messages.map((message, index) => {
+          const mine = message.name === userID;
+          return (
+            <div
+              key={`${message.name}-${index}-${message.text?.slice(0, 12)}`}
+              className={cn('flex items-end gap-2', mine && 'justify-end')}
+            >
+              {!mine ? (
+                <ChatIcon photoURL={avatarURL || ''} chatName={chatName} />
+              ) : null}
+              <p
+                className={cn(
+                  'max-w-[80%] rounded-2xl px-3.5 py-2 text-[15px] leading-[21px]',
+                  mine
+                    ? 'bg-primary text-primary-foreground'
+                    : 'bg-muted text-foreground'
+                )}
+              >
+                {message.text}
+              </p>
+            </div>
+          );
+        })}
+      </div>
+
+      <div className="relative border-t border-white/[0.08] px-3 py-3">
+        <div className="flex items-end gap-2 rounded-[20px] border border-white/[0.12] bg-muted/40 px-2 py-1.5">
+          <button
+            type="button"
+            className="mb-0.5 rounded-full p-1.5 text-muted-foreground hover:text-foreground"
+            onClick={() => setDisplayEmojiSelector((v) => !v)}
+            aria-label="Emoji"
+          >
+            <Smile className="h-5 w-5" strokeWidth={1.75} id="emoji" />
+          </button>
+          <TextareaAutosize
+            className="my-1.5 max-h-28 w-full resize-none bg-transparent text-[15px] leading-[21px] text-foreground placeholder:text-muted-foreground focus:outline-none"
+            value={inputText}
+            onChange={(e) => setInputText(e.target.value)}
+            placeholder="Message..."
+            maxRows={4}
+            minRows={1}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
                 sendChatRoomMessage({
-                  e,
+                  e: { ...e, code: 'Enter', target: { id: 'sendMessage' } },
                   chatRoomID,
                   inputText,
                   userID,
                   setInputText,
                   username: chatName,
-                })
+                });
               }
-            >
-              Send
-            </button>
-            {displayEmojiSelector ? (
-              <div id="emojiSelector" className="absolute left-0 top-[-340px]">
-                <EmojiSelector
-                  setInputText={setInputText}
-                  inputText={inputText}
-                />
-              </div>
-            ) : (
-              ''
+            }}
+          />
+          <button
+            id="sendMessage"
+            type="button"
+            className={cn(
+              'mb-0.5 shrink-0 px-2 py-1.5 text-[15px] font-semibold',
+              inputText.trim()
+                ? 'text-foreground'
+                : 'pointer-events-none text-muted-foreground/40'
             )}
-          </div>
+            onClick={(e) =>
+              sendChatRoomMessage({
+                e,
+                chatRoomID,
+                inputText,
+                userID,
+                setInputText,
+                username: chatName,
+              })
+            }
+          >
+            Send
+          </button>
         </div>
-      ) : (
-        <div />
-      )}
+        {displayEmojiSelector ? (
+          <div id="emojiSelector" className="absolute bottom-16 left-3 z-20">
+            <EmojiSelector setInputText={setInputText} inputText={inputText} />
+          </div>
+        ) : null}
+      </div>
     </div>
   );
 }
@@ -217,21 +246,21 @@ function ChatIcon({
   chatName: string;
 }) {
   return (
-    <div className="mt-auto h-7 w-7 md:mr-2">
-      {photoURL === '' ? (
-        <div className="h-6 w-6">
+    <div className="h-7 w-7 shrink-0">
+      {!photoURL ? (
+        <div className="h-7 w-7">
           <ProfilePicSVG strokeWidth="1.3" />
         </div>
       ) : (
         <Link href={`/${chatName}`}>
-            <Image
-              className="h-6 w-6 cursor-pointer select-none rounded-full object-cover"
-              src={photoURL}
-              alt="avatar"
-              height="24"
-              width="24"
-            />
-          </Link>
+          <Image
+            className="h-7 w-7 rounded-full object-cover"
+            src={photoURL}
+            alt=""
+            height={28}
+            width={28}
+          />
+        </Link>
       )}
     </div>
   );
