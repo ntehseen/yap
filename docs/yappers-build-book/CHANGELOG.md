@@ -24,3 +24,4 @@
 - Phase 3 conversations: `/post/[username]/[postId]` thread route, reply composer, notification deep links (`06-post-conversations.md`).
 - Phase 4 profiles & discovery: restyled profiles, Posts/Media tabs, bio + nested `xClash`, Explore search (`07-profiles.md`, `08-search-and-discovery.md`).
 - Phase 5 messaging: Threads-shell Inbox, Activity panel, keyed Firestore listener cleanup (`09-messaging.md`).
+- Phase 6 X-Clash lite: typed posts, server/alliance context, Explore filters (`11-xclash-features.md`).

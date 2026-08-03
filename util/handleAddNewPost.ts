@@ -15,8 +15,14 @@ import {
 } from 'firebase/firestore';
 import { User } from 'firebase/auth';
 import app from './firbaseConfig';
-import { notificationTypes, userDetailTypes } from './atoms';
+import {
+  notificationTypes,
+  postXClashContext,
+  userDetailTypes,
+  YapPostKind,
+} from './atoms';
 import { uploadToCloudinary } from './uploadToCloudinary';
+import { normalizeTags } from './yapTypes';
 
 interface selectedImageProps {
   e: React.ChangeEvent<HTMLInputElement>;
@@ -53,6 +59,9 @@ interface PublishProps {
   selectedImage?: File;
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   onDone?: () => void;
+  yapType?: YapPostKind;
+  xClashContext?: postXClashContext;
+  tags?: string[];
 }
 
 async function handleSubmitToDB({
@@ -60,11 +69,17 @@ async function handleSubmitToDB({
   userNotifications,
   userDetails,
   caption,
+  yapType = 'yap',
+  xClashContext,
+  tags,
 }: {
   url: string;
   userNotifications: notificationTypes;
   userDetails: userDetailTypes | User;
   caption: string;
+  yapType?: YapPostKind;
+  xClashContext?: postXClashContext;
+  tags?: string[];
 }) {
   const db = getFirestore(app);
   const userRef = doc(db, 'users', userNotifications.username!);
@@ -85,6 +100,12 @@ async function handleSubmitToDB({
     createdAt: new Date().toLocaleDateString(),
   };
 
+  const context: postXClashContext = {
+    server: (xClashContext?.server || '').trim().slice(0, 40),
+    alliance: (xClashContext?.alliance || '').trim().slice(0, 40),
+  };
+  const cleanTags = normalizeTags(tags);
+
   await addDoc(collection(db, `${userNotifications.username}Posts`), {
     createdAt: serverTimestamp(),
     imgURL: url,
@@ -92,6 +113,10 @@ async function handleSubmitToDB({
     comments: [postCaption],
     postID: '',
     likes: [],
+    reposts: [],
+    yapType: yapType || 'yap',
+    xClashContext: context,
+    ...(cleanTags.length ? { tags: cleanTags } : {}),
   });
 
   const q = query(
@@ -123,6 +148,9 @@ export async function publishYap({
   selectedImage,
   setLoading,
   onDone,
+  yapType = 'yap',
+  xClashContext,
+  tags,
 }: PublishProps) {
   const trimmed = caption.trim();
   if (!trimmed && !selectedImage) {
@@ -152,6 +180,9 @@ export async function publishYap({
       userNotifications,
       userDetails,
       caption: trimmed,
+      yapType,
+      xClashContext,
+      tags,
     });
     onDone?.();
   } catch (error) {
@@ -168,6 +199,8 @@ interface submitProps {
   selectedImage: File;
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   setAddPost: React.Dispatch<React.SetStateAction<boolean>>;
+  yapType?: YapPostKind;
+  xClashContext?: postXClashContext;
 }
 
 /** Legacy modal submit — still image-required for AddNewPost dialog. */
@@ -178,6 +211,8 @@ export async function handleSubmit({
   selectedImage,
   setLoading,
   setAddPost,
+  yapType,
+  xClashContext,
 }: submitProps) {
   await publishYap({
     userNotifications,
@@ -186,5 +221,7 @@ export async function handleSubmit({
     selectedImage,
     setLoading,
     onDone: () => setAddPost(false),
+    yapType,
+    xClashContext,
   });
 }

@@ -8,6 +8,7 @@ import atoms from '../../util/atoms';
 import formatRelativeTime from '../../util/formatRelativeTime';
 import ProfilePicSVG from '../svgComps/ProfilePicSVG';
 import PostActions from '../post/PostActions';
+import YapTypeBadge from '../post/YapTypeBadge';
 import NoPostsFiller from './NoPostsFiller';
 
 interface Props {
@@ -144,6 +145,8 @@ const HomePagePost = ({ username, index }: Props) => {
               ) : null}
             </div>
           </div>
+
+          <YapTypeBadge post={postDetails} />
 
           {body ? (
             <button

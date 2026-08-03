@@ -2,7 +2,7 @@
 
 Maps features to important files at the Yap repo root. Update this file whenever features move or new Yappers modules appear.
 
-**Last updated:** 2026-08-03 (Phase 5 messaging)  
+**Last updated:** 2026-08-03 (Phase 6 X-Clash lite)  
 **Related chapter:** [`01-starter-codebase-audit.md`](./01-starter-codebase-audit.md)
 
 ---
@@ -107,7 +107,7 @@ Maps features to important files at the Yap repo root. Update this file whenever
 
 | Concern | Files | Data | Docs |
 | --- | --- | --- | --- |
-| Create post (upload + caption) | `components/header/AddNewPost.tsx`, `util/handleAddNewPost.ts` (`publishYap`), `util/uploadToCloudinary.ts` | Cloudinary + `{username}Posts`, `users.postCount` | 05, 02b |
+| Create post (upload + caption) | `components/header/AddNewPost.tsx`, `util/handleAddNewPost.ts` (`publishYap`), `util/uploadToCloudinary.ts`, `util/yapTypes.ts` | Cloudinary + `{username}Posts` (`yapType`, `xClashContext`, `tags`), `users.postCount` | 05, 11, 02b |
 | Generic image upload helper | `util/handleUploadImage.ts`, `util/uploadToCloudinary.ts` | Cloudinary | 05, 02b |
 | Like / unlike | `util/handleLikePost.ts` | post `likes`, `users.likedPosts` | 06 |
 | Heart notification write | `util/handleUpdateHeartNotification.ts`, `handleResetNewHears.ts` | `users.heartNotifications`, `newHeart` | 10 |
@@ -141,8 +141,19 @@ Maps features to important files at the Yap repo root. Update this file whenever
 | Concern | Files | Data | Docs |
 | --- | --- | --- | --- |
 | Header search | `HeaderSearchWindow.tsx`, `useCheckUserName.ts` | `users` + `usernameQuery` | 08 |
-| Explore page | `pages/Explore.tsx`, `hooks/useExploreUsers.ts` | `users` paginated | 08 |
+| Explore page | `pages/Explore.tsx`, `hooks/useExploreUsers.ts` | `users` paginated; client server/alliance filters | 08, 11 |
 | User list mirror | `useGetUserDetailsOnAuth` → `userList` | `userList` | 08 |
+
+---
+
+## X-Clash (Phase 6 lite)
+
+| Concern | Files | Data | Docs |
+| --- | --- | --- | --- |
+| Post kinds + labels | `util/yapTypes.ts`, `util/atoms.ts` (`YapPostKind`) | `yapType`, `xClashContext`, `tags` on posts | 11 |
+| Type badges | `components/post/YapTypeBadge.tsx` | post fields | 11 |
+| Composer type/context | `FeedComposer.tsx`, `AddNewPost.tsx` | profile `xClash` prefills | 11 |
+| Server suggestions | `RightSidebar.tsx` | spotlight ∩ same server | 11 |
 
 ---
 

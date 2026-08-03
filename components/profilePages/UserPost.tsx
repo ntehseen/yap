@@ -3,6 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Heart, MessageCircle } from 'lucide-react';
 import { postType } from '../../util/atoms';
+import { yapTypeShort } from '../../util/yapTypes';
 
 function UserPost({
   postInformation,
@@ -20,6 +21,7 @@ function UserPost({
   const hasImage = Boolean(postInformation.imgURL);
   const previewText = postInformation.comments?.[0]?.text || '';
   const replyCount = Math.max((postInformation.comments?.length || 1) - 1, 0);
+  const typeShort = yapTypeShort(postInformation.yapType);
 
   return (
     <Link
@@ -44,6 +46,12 @@ function UserPost({
           </p>
         </div>
       )}
+
+      {typeShort ? (
+        <span className="absolute left-1.5 top-1.5 rounded bg-black/65 px-1.5 py-0.5 text-[10px] font-semibold text-white">
+          {typeShort}
+        </span>
+      ) : null}
 
       {hovered ? (
         <div className="absolute inset-0 flex items-center justify-center gap-4 bg-black/45 text-white">

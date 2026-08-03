@@ -67,6 +67,14 @@ export interface postCommentTypes {
   username: string;
 }
 
+/** X-Clash / general post kinds. Legacy docs omit this → treat as `yap`. */
+export type YapPostKind = 'yap' | 'recruitment' | 'battleReport' | 'heroBuild';
+
+export interface postXClashContext {
+  server?: string;
+  alliance?: string;
+}
+
 export interface postType {
   comments: postCommentTypes[];
   createdAt: any;
@@ -75,6 +83,9 @@ export interface postType {
   likes: string[];
   postID: string;
   reposts?: string[];
+  yapType?: YapPostKind;
+  xClashContext?: postXClashContext;
+  tags?: string[];
 }
 
 export interface userPostsInfoType {

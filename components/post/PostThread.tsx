@@ -8,6 +8,7 @@ import { postType } from '@/util/atoms';
 import formatRelativeTime from '@/util/formatRelativeTime';
 import ProfilePicSVG from '@/components/svgComps/ProfilePicSVG';
 import PostActions from './PostActions';
+import YapTypeBadge from './YapTypeBadge';
 import ReplyItem from './ReplyItem';
 import ReplyComposer from './ReplyComposer';
 
@@ -91,6 +92,7 @@ export default function PostThread({ post, username }: Props) {
               {author.username}
             </Link>
             <p className="text-[13px] text-muted-foreground">@{username}</p>
+            <YapTypeBadge post={post} />
           </div>
         </div>
 
